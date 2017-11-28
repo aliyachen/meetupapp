@@ -1,0 +1,33 @@
+
+	<link rel="stylesheet" href="/css/style.css" />
+<h2 class="page-header">Gallery</h2>
+
+
+<div>
+  <div class="gallery">
+    {{#each meetups}}
+	<img src="/uploads/{{ this.img }}" class="responsive-img hover-opacity" alt="{{this.date}} style="float: left; width: 30%; cursor:pointer" name="added_imgs" onclick="onClick(this)">
+	{{/each}}
+  </div>
+</div>
+
+<div id="modal01" class="modal" onclick="this.style.display='none'">
+  <div class="modal-content animate-opacity">
+    <img id="img01" style="width:100%">
+  </div>
+  div id="caption"></div>
+</div>
+
+<script>
+var captionText = document.getElementById("caption");
+function onClick(element) {
+  document.getElementById("img01").src = element.src;
+  document.getElementById("modal01").style.display = "block";
+  captionText.innerHTML = this.alt;
+}
+<{{!}}/script>
+
+
+
+
+

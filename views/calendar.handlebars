@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- JS Dependencies -->
+    <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">{{!}}</script>
+    <script data-require="moment.js@*" data-semver="2.14.1" src="https://npmcdn.com/moment@2.14.1"><{{!}}/script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.js"><{{!}}/script>
+    
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.css" />
+  </head>
+
+  <body>
+    <div id="calendar"></div>
+    <div id="events" value={{events}}></div>
+    {{#each events}}
+    	{{this.start}}<br>
+    	{{this.end}}<br>
+    	{{this.title}}<br>
+    {{/each}}
+    <script type="text/javascript">
+    
+$(document).ready(function() {
+	var eventsdata = document.getElementById("events").value;
+    $('#calendar').fullCalendar({
+    	events: eventsdata,
+    	eventDataTransform: function (rawdata) {
+    		return {
+    			title: rawdata.title,
+    			start: rawdata.start,
+    			end: rawdata.end
+    		};
+
+    	}
+    });
+  });
+  <{{!}}/script>
+</html>

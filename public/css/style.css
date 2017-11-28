@@ -1,0 +1,457 @@
+
+/*bg image*/]
+@import "compass/css3";
+
+@-webkit-keyframes fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 0.65; }
+}
+
+.bgimage {
+    background-image: url(meetup.jpeg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  
+    opacity: 0;
+  
+    -webkit-animation-name: fade-in;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-timing-function: ease-in;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-delay: 0.2s;
+}
+
+.bgimage.visible {
+  opacity: 0.65;
+}
+
+.hometext {
+  padding-top: 15vh;
+  text-align: center;
+}
+.staticbgimage {
+  background-image: url(meetup.jpeg);
+}
+.notebookbg {
+  background-image: url(green-notebook.jpeg);
+}
+.viewnotebookbg {
+  background-image: url(graph.jpeg);
+}
+.staticbgimage, .notebookbg, .viewnotebookbg {
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.65;
+  
+}
+
+.fade {
+        animation:opac 0.5s}@keyframes opac{from{opacity:0} to{opacity:1}
+}
+
+/* navigation */
+#meetuptitle {
+  position:fixed;
+  text-align: center;
+  color: grey;
+  padding: 0;
+  padding-left: 20px;
+  height: 60px;
+  z-index: 4000;
+}
+
+.apptitle {
+  font-size: 24px;
+  height: 60px;
+  line-height: 60px;
+  margin: auto;
+  text-align: center;
+}
+
+.homecontainer {
+  width: 90%;
+  text-align: center;
+  margin: auto;
+  padding-top: 20vh;
+}
+
+}
+.navcontainer {
+    color: grey;
+    margin-top: 0;
+    text-align: center;
+    font-size: 1vw;
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    padding-left: 0px;
+    background-color: #26292d;
+    overflow: auto;
+    z-index: 2;
+}
+
+.nav {
+  position: fixed;
+  right: 0;
+}
+.nav-item .nav-link {
+  font-size: 1em;
+  color: grey;
+  margin: auto;
+  z-index: 1000;
+  height: 60px;
+  width: 7.5vw;
+}
+
+.nav>li>a:focus,.nav>li>a:hover{
+  text-decoration:none;
+  background-color:#eee;
+  border-radius:0;
+}
+
+li, ul, h3 {
+  z-index: 1200;
+}
+
+li a:hover {
+    color: white;
+}
+a:hover {
+  text-decoration: none;
+  color: grey;
+}
+
+.dropbtn {
+    margin: auto;
+    color: grey;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 1500;
+}
+
+.dropdown-content {
+    margin: auto;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 7.5vw;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding-left: 0;
+    padding-right: 0;
+    height: 60px;
+    margin: auto;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+
+/* meetup list */
+.meetup {
+  text-align: left;
+  width: 40%;
+  margin: auto;
+}
+/* form */
+.form {
+  width: 30%;
+  margin: auto;
+  text-align: center;
+}
+/* date */
+
+.datecontainer {
+  width: 100%;
+  margin-right:auto;
+  margin-left:auto
+}
+
+
+input-group .form-control {
+  width: auto;
+  margin: auto;
+  z-index:2;
+  width:100%;
+  margin-bottom:0;
+  border-radius:0;
+}
+
+
+#selectbox {
+  height: 35px;
+}
+
+#notesbox {
+  height: 100px;
+}
+
+/* Space out content a bit */
+body {
+  padding-top: 0px;
+  padding-bottom: 1.5rem;
+  text-align: center;
+   font-family: 'Lato', sans-serif;
+}
+#navi {
+    width: 100%;
+    height: 60px;
+    position: fixed;
+    margin-top: 0px;
+    margin: 0px;
+    padding-left: 0px;
+    background-color: #26292d;
+    overflow: auto;
+    z-index: 1;
+}
+
+.button {
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 3px 7px 3px 7px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+}
+
+/*gallery animate */
+.animate-opacity{animation:opac 0.8s}@keyframes opac{from{opacity:0} to{opacity:1}}
+
+.gallery {
+  display: inline-block;
+}
+
+.hover-opacity:hover{opacity:0.60}
+
+.modal{
+  z-index:3;
+  display:none;
+  padding-top:100px;
+  position:fixed;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%
+  overflow:auto;
+  background-color:rgb(0,0,0);
+  background-color:rgba(0,0,0,0.4)
+}
+
+
+.modal-content{
+  margin:auto;
+  background-color:#fff;
+  position:relative;
+  padding:0;
+  outline:0;
+  width:600px;
+  
+}
+
+
+/* table */
+table {
+  background: rgba(255,255,255,0.75);
+  margin: auto;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.category {
+  width: 15%;
+}
+
+/* Map */
+
+ /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        margin: auto;
+        height: 60vh;
+        width: 60vw;
+      }
+    
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        width: 50%;
+      }
+
+      #origin-input,
+      #destination-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 20%;
+      }
+
+      #origin-input:focus,
+      #destination-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #mode-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        margin-left: 12px;
+        padding: 5px 11px 0px 11px;
+        width: 50%;
+      }
+
+      #mode-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #changemode-walking, #changemode-transit, #changemode-driving {
+        width: 10%;
+      }
+
+
+
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+/* Custom page header */
+.header {
+  padding-bottom: 1rem;
+  border-bottom: .05rem solid #e5e5e5;
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 3rem;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 1.5rem;
+  color: #777;
+  border-top: .05rem solid #e5e5e5;
+}
+
+/* Customize container */
+@media (min-width: 48em) {
+  .container {
+    max-width: 46rem;
+  }
+}
+.container-narrow > hr {
+  margin: 2rem 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  border-bottom: .05rem solid #e5e5e5;
+}
+.jumbotron .btn {
+  padding: .75rem 1.5rem;
+  font-size: 1.5rem;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 3rem 0;
+}
+.marketing p + h4 {
+  margin-top: 1.5rem;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 48em) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+
+.page-header{
+  margin-top:0;
+  text-align: center;
+}
+
+footer{
+  margin-top:40px;
+}

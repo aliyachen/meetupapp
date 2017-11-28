@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MeetupApp</title>
+	<link rel="stylesheet" href="/css/bootstrap.css" />
+	<link rel="stylesheet" href="/css/style.css" />
+  <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:100|Lato:300|Raleway:300|Roboto:300,400|Work+Sans:300,400" rel="stylesheet">
+
+</head>
+<body>
+
+      <div id="navi"></div>
+      <div id="meetuptitle">
+        {{#if user}}
+        <h4 class="apptitle">Welcome, {{user.name}}!</h3>
+        {{else}}
+        <h4 class="apptitle">MeetupApp</h3>
+        {{/if}}
+      </div>
+      <div class="navcontainer">
+        <nav>
+          <ul class="nav nav-pills">
+            {{#if user}}
+              <li class="nav-item"><a class="nav-link" href="/createMeetup">New</a></li>
+              <li class="nav-item"><a class="nav-link" href="/gallery">Gallery</a></li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link" href="/" class="dropbtn">All</a>
+                <div class="dropdown-content">
+                  <a class="nav-link" href="/catchup">Catch-ups</a>
+                 <a class="nav-link" href="/studydate">Study Dates</a>
+                 <a class="nav-link" href="/businessmeeting">Business</a>
+                  <a class="nav-link" href="/clubmeeting">Club</a>
+                  <a class="nav-link" href="/party">Parties</a>
+                 <a class="nav-link" href="/other">Other</a>
+                </div>
+              </li>
+              <li class="nav-item"><a class="nav-link" href="/calendar">Calendar</a></li>
+              <li class="nav-item"><a class="nav-link" href="/archive">Archive</a></li>
+              <li class="nav-item"><a class="nav-link" href="/users/logout">Logout</a></li>
+            {{else}}
+              <li class="nav-item"><a class="nav-link" href="/users/login">Login</a></li>
+              <li class="nav-item"><a class="nav-link" href="/users/register">Register</a></li>
+            {{/if}}
+          </ul>
+        </nav>
+      </div>
+	<div class="homecontainer">
+
+        <div class="row">
+          <div class="col-lg-12">
+          	{{#if success_msg}}
+            	<div class="alert alert-success">{{success_msg}}</div>
+          	{{/if}}
+
+          	{{#if error_msg}}
+            	<div class="alert alert-danger">{{error_msg}}</div>
+          	{{/if}}
+
+          	{{#if error}}
+            	<div class="alert alert-danger">{{error}}</div>
+          	{{/if}}
+
+          	{{{body}}}
+          </div>
+
+   
+        </div>
+
+
+    </div> <!-- /container -->
+</body>
+</html>

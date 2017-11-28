@@ -1,0 +1,12 @@
+{{#if user}}
+<h2>Add Images</h2>
+<div class="form">
+<form id="frmUploader" enctype="multipart/form-data" action="/update/{{meetups.id}}" method="post">
+ 	<p>Add Images<br>
+ 	<input type="file" name="imgUploader" accept="image/*" value="/uploads/{{ meetups.img }}">
+ 	</p>
+ 	<p><input type="submit" name="upload" value="Add Image"></p>
+</form>
+</div>
+<img src="/uploads/{{ meetups.img }}" class="responsive-img" name="added_imgs">
+{{/if}}

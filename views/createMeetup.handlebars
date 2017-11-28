@@ -1,0 +1,123 @@
+
+ <script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language=en&key=AIzaSyB4Ztm5h7pIWU2NmEqbwJbjsWfIZebzN1I"><{{!}}/script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<!--datetimepicker-->
+  <script src="https://code.jquery.com/jquery-1.12.4.js"><{{!}}/script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"><{{!}}/script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"><{{!}}/script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"><{{!}}/script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"><{{!}}/script>
+
+<script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/a549aa8780dbda16f6cff545aeabc3d71073911e/src/js/bootstrap-datetimepicker.js"><{{!}}/script>
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
+
+<link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/a549aa8780dbda16f6cff545aeabc3d71073911e/build/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+
+	<link rel="stylesheet" href="/css/style.css" />
+
+
+<div class="notebookbg"></div>
+<h2>Add Meetup</h2>
+<div class="form">
+<form method="post">
+	<p>Meetup<br>
+	<input class="form-control" type="text" name="meetupName" placeholder="Meetup Name">
+	</p>
+
+	<p>Participants<br>
+	<div class="input_fields_wrap">
+    <button class="add_field_button">Add</button>
+    <div><input type="text" name="participants" class="form-control"></div>
+	</div>
+
+	</p>
+	<br>
+	<p>Type<br>
+		<select id="selectbox" class="form-control" name="type">
+			<option value="Catch-up">Catch-up</option>
+			<option value="Study Date">Study Date</option>
+			<option value="Business Meeting">Business Meeting</option>
+			<option value="Club Meeting">Club Meeting</option>
+			<option value="Party">Party</option>
+			<option value="Other">Other</option>
+		</select>
+	</p>
+	
+	<p>
+	<div class="datecontainer">
+			Start Date
+            <div class='input-group date' id='datetimepicker1'>
+                <input type='text' name="startdate" class="form-control" value="{{date}}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            End Date
+            <div class='input-group date' id='datetimepicker2'>
+                <input type='text' name="enddate" class="form-control"  value="{{date}}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+	</div>
+	</p>
+
+	<p>Location<br>
+	<input id="locationTextField" class="form-control" type="text" name="location">
+	</p>
+
+	<p>Notes<br>
+	<textarea id="notesbox" class="form-control" style="overflow-x:hidden" name="notes" placeholder="Notes"></textarea>
+	</p>
+	
+	<p><input type="submit"></p>
+</form>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker1').datetimepicker();
+        $('#datetimepicker2').datetimepicker({
+            useCurrent: false //Important! See issue #1075
+        });
+        $("#datetimepicker1").on("dp.change", function (e) {
+            $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker2").on("dp.change", function (e) {
+            $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+     var input = document.getElementById('locationTextField');
+              var autocomplete = new google.maps.places.Autocomplete(input);
+<{{!}}/script>
+
+<script>
+(function ($) {
+    $(document).ready(function() {
+    var max_fields      = 10; //maximum input boxes allowed
+    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+    var add_button      = $(".add_field_button"); //Add button ID
+    
+    var x = 1; //initlal text box count
+    $(add_button).click(function(e){ //on add input button click
+        e.preventDefault();
+        if(x < max_fields){ //max input box allowed
+            x++; //text box increment
+            $(wrapper).append('<div><input type="text" name="participants" class="form-control"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+        }
+    });
+    
+    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })
+});
+})(jQuery);
+<{{!}}/script>
