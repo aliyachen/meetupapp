@@ -12,27 +12,27 @@
 
   <body>
     <div id="calendar"></div>
-    <div id="events" value={{events}}></div>
+    <div id="events" value={{{events}}}></div>
     {{#each events}}
     	{{this.start}}<br>
     	{{this.end}}<br>
     	{{this.title}}<br>
     {{/each}}
-    <script type="text/javascript">
-    
-$(document).ready(function() {
-	var eventsdata = document.getElementById("events").value;
-    $('#calendar').fullCalendar({
-    	events: eventsdata,
-    	eventDataTransform: function (rawdata) {
-    		return {
-    			title: rawdata.title,
-    			start: rawdata.start,
-    			end: rawdata.end
+
+<script type="text/javascript">    
+    $(document).ready(function() {
+	   var eventsdata = document.getElementById("events").value;
+        $('#calendar').fullCalendar({
+    	   events: eventsdata,
+    	   eventDataTransform: function (events) {
+    		  return {
+    			title: events.title,
+    			start: events.start,
+    			end: events.end
     		};
 
-    	}
+    	   }
+        });
     });
-  });
-  <{{!}}/script>
+<{{!}}/script>
 </html>

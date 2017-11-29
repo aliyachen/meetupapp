@@ -4,18 +4,22 @@
 
 
 <div>
-  <div class="gallery">
+<div class="gallery">
     {{#each meetups}}
-	<img src="/uploads/{{ this.img }}" class="responsive-img hover-opacity" alt="{{this.date}} style="float: left; width: 30%; cursor:pointer" name="added_imgs" onclick="onClick(this)">
+      {{#if this.img}} 
+     <div class="galleryimg">
+	<img src="/uploads/{{ this.img }}" class="responsive-img hover-opacity" value="{{this.startdate}}: {{this.meetupName}}" style="float: left; cursor:pointer" name="added_imgs" onclick="onClick(this)">
+  </div>
+    {{/if}}
 	{{/each}}
   </div>
 </div>
 
 <div id="modal01" class="modal" onclick="this.style.display='none'">
   <div class="modal-content animate-opacity">
-    <img id="img01" style="width:100%">
+    <img id="img01" style="max-width:100w; width:auto; max-height:100vh; height:auto">
   </div>
-  div id="caption"></div>
+  <div id="caption"></div>
 </div>
 
 <script>
@@ -23,7 +27,7 @@ var captionText = document.getElementById("caption");
 function onClick(element) {
   document.getElementById("img01").src = element.src;
   document.getElementById("modal01").style.display = "block";
-  captionText.innerHTML = this.alt;
+  captionText.innerHTML = this.value;
 }
 <{{!}}/script>
 

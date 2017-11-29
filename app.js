@@ -11,28 +11,13 @@ var LocalStrategy = require('passport-local').Strategy;
 var multer = require('multer');
 var fs = require('fs');
 var moment = require('moment');
-
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
-// var MongoClient = require('mongodb').MongoClient;
-// var db = null;
-// MongoClient.connect('mongodb://chenali:ac12345@ds159235.mlab.com:59235/aliya', (err, database) => {
-// 	if (err) return console.log(err)
-// 	db = database
-// 	app.listen(3000, () => {
-// 		console.log('listening on 3000')
-// 	})
-// })
-
 mongoose.connect('mongodb://localhost/meetupapp');
 var db = mongoose.connection;
-
-//var routes = require('./routes/index');
 var users = require('./routes/users');
-// var meetups = require('./routes/meetups');
-
+var User = require('./models/user');
 //init app
 var app = express();
 
@@ -99,15 +84,6 @@ app.use('/users', users);
 app.set('port', (process.env.PORT || 3000));
 
 
-
-//model
-
-//photo schema
-// var Photo = new Schema(
-// 	{ img: 
-// 		{ data: Buffer, contentType: String}
-// 	}
-// );
 var Meetup = mongoose.model('Meetup', {
 	meetupName: {
 		type: String,
@@ -138,6 +114,9 @@ var Meetup = mongoose.model('Meetup', {
 	status: {
 		type: String,
 		default: 'current'
+	},
+	userid: {
+		type: String
 	}
 })
 
@@ -176,48 +155,35 @@ var upload = multer({
 	storage: storage,
 });
 
-//addimage
-app.get('/addimage/:id/', ensureAuthenticated, function (req, res) {
-	Meetup.find(function(err, arrayOfMeetups){
-		res.render('addimage', { 
-			meetups: arrayOfMeetups,
-			user: req.user
-		});
+
+//sort meetups by date
+function sortByDate(arrayOfMeetups) {
+	arrayOfMeetups.sort (function (a, b) {
+    	var asplitwhite = (a.startdate).split(" ");
+    	var adatenottime = asplitwhite[0];
+    	var bsplitwhite = (b.startdate).split(" ");
+    	var bdatenottime = bsplitwhite[0];
+   		var aComps = (adatenottime).split("/");
+   		var bComps = (bdatenottime).split("/");
+    	var aDate = new Date(aComps[2], aComps[0], aComps[1]);
+    	var bDate = new Date(bComps[2], bComps[0], bComps[1]);
+    	var value = aDate.getTime() - bDate.getTime();
+    	if (value == 0) {
+    		var atime = asplitwhite[1] + " " + asplitwhite[2].toLowerCase();
+    		var btime = bsplitwhite[1] + " " + bsplitwhite[2].toLowerCase();
+    		value = new Date('2000/01/01 ' + atime) - new Date('2000/01/01 ' + btime);
+    	} 
+    	return value;
 	});
-	
-});
-
-
+}
 
 //read
-app.get('/', function(req, res) {
-	var query = { status: 'current' };
+app.get('/', ensureAuthenticated, function(req, res) {
+	console.log(req.user);
+	var query = { status: 'current', userid: req.user.id };
 	Meetup.find(query, function(err, arrayOfMeetups) {
-		console.log(arrayOfMeetups.length);
-		 arrayOfMeetups.sort (function (a, b) {
-
-    console.log(JSON.stringify(a.startdate));
-    console.log(JSON.stringify(a.meetupName));
-    console.log(a.status);
-    //      var aComps = (a.startdate).split("/");
-    // var bComps = (b.startdate).split("/");
-    // var aDate = new Date(aComps[2], aComps[1], aComps[0]);
-    // var bDate = new Date(bComps[2], bComps[1], bComps[0]);
-    // return aDate.getTime() - bDate.getTime();
-});
+		 sortByDate(arrayOfMeetups);
 		res.render('index', {
-			user: req.user,
-			meetups: arrayOfMeetups
-		});
-	});
-});
-
-
-app.get('/catchup', ensureAuthenticated, function(req, res) {
-	var query = { type: 'Catch-up', status: 'current' };
-	Meetup.find(query, function(err, arrayOfMeetups) {
-		res.render('category', {
-			title: 'Catch-ups',
 			user: req.user,
 			meetups: arrayOfMeetups
 		});
@@ -228,8 +194,10 @@ app.get('/catchup', ensureAuthenticated, function(req, res) {
 
 //get image gallery
 app.get('/gallery', ensureAuthenticated, function (req, res) {
-
-	Meetup.find(function(err, arrayOfMeetups){
+	var query = { userid: req.user.id };
+	Meetup.find(query, function(err, arrayOfMeetups){
+		sortByDate(arrayOfMeetups);
+		arrayOfMeetups.reverse();
 		res.render('gallery', { 
 			meetups: arrayOfMeetups,
 			user: req.user
@@ -241,11 +209,15 @@ app.get('/gallery', ensureAuthenticated, function (req, res) {
 
 //get calendar
 app.get('/calendar', ensureAuthenticated, function (req, res) {
-	Meetup.find(function(err, arrayOfMeetups){
+	var query = { userid: req.user.id };
+	Meetup.find(query, function(err, arrayOfMeetups){
 	var meetupArray = arrayOfMeetups;
     var events = [];
     meetupArray.forEach(function(e) {
 		var startstr = e.startdate;
+		if (startstr.charAt(12) == ':') {
+			startstr = startstr.slice(0, 11) + '0' + startstr.slice(11, 16);
+		}
  		var startmonth = startstr.slice(0, 2);
     	var startday = startstr.slice(3, 5);
     	var startyear = startstr.slice(6, 10);
@@ -256,6 +228,9 @@ app.get('/calendar', ensureAuthenticated, function (req, res) {
     	console.log(startdate);
 
 		var endstr = e.startdate;
+		if (endstr.charAt(12) == ':') {
+			endstr = endstr.slice(0, 11) + '0' + endstr.slice(11, 16);
+		}
  		var endmonth = endstr.slice(0, 2);
     	var endday = endstr.slice(3, 5);
     	var endyear = endstr.slice(6, 10);
@@ -296,6 +271,7 @@ app.get('/createMeetup', ensureAuthenticated, function (req, res) {
    	 mm = '0'+mm
 	} 
 	today = mm + '/' + dd + '/' + yyyy;
+	console.log("user: " + req.user.id);
 	res.render('createMeetup', { 
 		user: req.user,
 		date: today
@@ -310,7 +286,8 @@ app.post('/createMeetup', function(req, res){
 		enddate: req.body.enddate,
 		location: req.body.location,
 		notes: req.body.notes,
-		status: req.body.status
+		status: req.body.status,
+		userid: req.user.id
 	}).save(function(err){
 		Meetup.find(function(err, toHBS) {
 			if (err) {
@@ -344,7 +321,8 @@ app.get('/edit/:id/', ensureAuthenticated, function(req, res) {
 	Meetup.findOne({
 		_id: id
 	}, function(err, doc) {
-		res.render('edit', {
+		res.render('view', {
+			edit: true,
 			meetups: doc
 		});
 	});
@@ -355,28 +333,46 @@ app.get('/edit/:id/', ensureAuthenticated, function(req, res) {
 
 app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
 	console.log("Reached")
-	console.log(req.file)
 	var id = req.params.id;
-	Meetup.findById(id, function(err, meetup){
-		meetup.meetupName = req.body.updated_meetupName,
-		meetup.participants = req.body.updated_participants,
-		meetup.type = req.body.updated_type,
-		meetup.startdate = req.body.updated_startdate,
-		meetup.enddate = req.body.updated_enddate,
-		meetup.location = req.body.updated_location,
-		meetup.notes = req.body.updated_notes,
-		meetup.img = req.file.filename,
-		meetup.save( function(err) {
-			if(err) {
-				console.log("why");
-				console.log(err);
-			} else {
-				console.log("ok why working");
-			}
+	if (req.file) {
+		Meetup.findById(id, function(err, meetup){
+			meetup.meetupName = req.body.updated_meetupName,
+			meetup.participants = req.body.updated_participants,
+			meetup.type = req.body.updated_type,
+			meetup.startdate = req.body.updated_startdate,
+			meetup.enddate = req.body.updated_enddate,
+			meetup.location = req.body.updated_location,
+			meetup.notes = req.body.updated_notes,
+			meetup.img = req.file.filename,
+			meetup.save( function(err) {
+				if(err) {
+					console.log(err);
+				} else {
+					console.log("saved");
+				}
+			});
+			return res.redirect('/');
 		});
-		return res.redirect('/');
-	});
-
+	} else {
+		Meetup.findById(id, function(err, meetup){
+			meetup.meetupName = req.body.updated_meetupName,
+			meetup.participants = req.body.updated_participants,
+			meetup.type = req.body.updated_type,
+			meetup.startdate = req.body.updated_startdate,
+			meetup.enddate = req.body.updated_enddate,
+			meetup.location = req.body.updated_location,
+			meetup.notes = req.body.updated_notes,
+			meetup.save( function(err) {
+				if(err) {
+					console.log(err);
+				} else {
+					console.log("saved");
+				}
+			});
+			return res.redirect('/');
+		});
+	}
+		
 		// return res.redirect('view', {
 		// 	meetupid: id
 		// })
@@ -423,15 +419,16 @@ app.get('/restore/:id', function(req, res) {
 				console.log("ok why working");
 			}
 		});
-		return res.redirect('/');
+		return res.redirect('/archive');
 	});
 })
 
 
 //catch-up meetups
 app.get('/catchup', ensureAuthenticated, function(req, res) {
-	var query = { type: 'Catch-up', status: 'current' };
+	var query = { type: 'Catch-up', status: 'current', userid: req.user.id };
 	Meetup.find(query, function(err, arrayOfMeetups) {
+		sortByDate(arrayOfMeetups);
 		res.render('category', {
 			title: 'Catch-ups',
 			user: req.user,
@@ -442,8 +439,9 @@ app.get('/catchup', ensureAuthenticated, function(req, res) {
 
 //study date meetups
 app.get('/studydate', ensureAuthenticated, function(req, res) {
-	var query = { type: 'Study Date', status: 'current'  };
+	var query = { type: 'Study Date', status: 'current', userid: req.user.id  };
 	Meetup.find(query, function(err, arrayOfMeetups) {
+		sortByDate(arrayOfMeetups);
 		res.render('category', {
 			title: 'Study Dates',
 			user: req.user,
@@ -454,8 +452,9 @@ app.get('/studydate', ensureAuthenticated, function(req, res) {
 
 //business meetings meetups
 app.get('/businessmeeting', ensureAuthenticated, function(req, res) {
-	var query = { type: 'businessmeeting', status: 'current'  };
+	var query = { type: 'businessmeeting', status: 'current', userid: req.user.id  };
 	Meetup.find(query, function(err, arrayOfMeetups) {
+		sortByDate(arrayOfMeetups);
 		res.render('category', {
 			title: 'Business Meetings',
 			user: req.user,
@@ -466,8 +465,9 @@ app.get('/businessmeeting', ensureAuthenticated, function(req, res) {
 
 //club meeting meetups
 app.get('/clubmeeting', ensureAuthenticated, function(req, res) {
-	var query = { type: 'Club Meeting', status: 'current'  };
+	var query = { type: 'Club Meeting', status: 'current', userid: req.user.id  };
 	Meetup.find(query, function(err, arrayOfMeetups) {
+		sortByDate(arrayOfMeetups);
 		res.render('category', {
 			title: 'Club Meetings',
 			user: req.user,
@@ -478,8 +478,9 @@ app.get('/clubmeeting', ensureAuthenticated, function(req, res) {
 
 //party meetups
 app.get('/party', ensureAuthenticated, function(req, res) {
-	var query = { type: 'Party', status: 'current'  };
+	var query = { type: 'Party', status: 'current', userid: req.user.id  };
 	Meetup.find(query, function(err, arrayOfMeetups) {
+		sortByDate(arrayOfMeetups);
 		res.render('category', {
 			title: 'Parties',
 			user: req.user,
@@ -490,8 +491,9 @@ app.get('/party', ensureAuthenticated, function(req, res) {
 
 //miscellaneous meetups
 app.get('/other', ensureAuthenticated, function(req, res) {
-	var query = { type: 'Other', status: 'current'  };
+	var query = { type: 'Other', status: 'current', userid: req.user.id  };
 	Meetup.find(query, function(err, arrayOfMeetups) {
+		sortByDate(arrayOfMeetups);
 		res.render('category', {
 			title: 'Other Meetups',
 			user: req.user,
@@ -502,8 +504,9 @@ app.get('/other', ensureAuthenticated, function(req, res) {
 
 //archived meetups
 app.get('/archive', ensureAuthenticated, function(req, res) {
-	var query = { status: 'past' };
+	var query = { status: 'past', userid: req.user.id };
 	Meetup.find(query, function(err, arrayOfMeetups) {
+		sortByDate(arrayOfMeetups);
 		res.render('archive', {
 			title: 'Past Meetups',
 			user: req.user,
@@ -513,6 +516,15 @@ app.get('/archive', ensureAuthenticated, function(req, res) {
 });
 
 
+
+// app.get('/friends', function(req, res) {
+//   User.find(function (err, users, res) {
+//     if (err) return res.sendStatus(500);
+//     res.render('users', { 
+//     	userList : users }
+//     );
+//   });
+// });
 //start
 
 

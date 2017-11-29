@@ -3,7 +3,7 @@ var bcrypt = require('bcryptjs');
 
 //user schema
 
-var UserSchema = mongoose.Schema({
+var User = mongoose.Schema({
 	username: {
 		type: String,
 		index:true
@@ -19,7 +19,7 @@ var UserSchema = mongoose.Schema({
 	}
 });
 
-var User = module.exports = mongoose.model('User', UserSchema);
+var User = module.exports = mongoose.model('User', User);
 
 module.exports.createUser = function(newUser, callback){
 	//hash password with bcrypt

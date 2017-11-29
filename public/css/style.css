@@ -37,7 +37,7 @@
 }
 
 .hometext {
-  padding-top: 15vh;
+  padding-top: 9vh;
   text-align: center;
 }
 .staticbgimage {
@@ -79,11 +79,11 @@
   padding: 0;
   padding-left: 20px;
   height: 60px;
-  z-index: 4000;
+  z-index: 2000;
 }
 
 .apptitle {
-  font-size: 24px;
+  font-size: 4vh;
   height: 60px;
   line-height: 60px;
   margin: auto;
@@ -94,7 +94,7 @@
   width: 90%;
   text-align: center;
   margin: auto;
-  padding-top: 20vh;
+  padding-top: 15vh;
 }
 
 }
@@ -117,7 +117,7 @@
   right: 0;
 }
 .nav-item .nav-link {
-  font-size: 1em;
+  font-size: 2.5vh;
   color: grey;
   margin: auto;
   z-index: 1000;
@@ -190,7 +190,7 @@ a:hover {
 /* meetup list */
 .meetup {
   text-align: left;
-  width: 40%;
+  width: 50%;
   margin: auto;
 }
 /* form */
@@ -242,7 +242,7 @@ body {
     padding-left: 0px;
     background-color: #26292d;
     overflow: auto;
-    z-index: 1;
+    z-index: 900;
 }
 
 .button {
@@ -256,38 +256,68 @@ body {
   border-left: 1px solid #CCCCCC;
 }
 
+.thumbnail {
+  position: relative;
+  width: 45px;
+  height: 45px;
+  overflow: hidden;
+  float:left;
+  border-radius: 5px;
+  margin: 4px;
+}
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /*gallery animate */
 .animate-opacity{animation:opac 0.8s}@keyframes opac{from{opacity:0} to{opacity:1}}
 
 .gallery {
   display: inline-block;
+  margin: auto;
+  width: 100%;
+  text-align: center;
+}
+
+.galleryimg {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  overflow: hidden;
+  float:left;
+  border-radius: 5px;
+  margin: 4px;
+}
+
+.galleryimg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hover-opacity:hover{opacity:0.60}
 
 .modal{
-  z-index:3;
-  display:none;
-  padding-top:100px;
-  position:fixed;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%
-  overflow:auto;
-  background-color:rgb(0,0,0);
-  background-color:rgba(0,0,0,0.4)
+    z-index:3000;
+    display:none;
+    text-align: center;
+    margin:0;
+    position:fixed;
+    width:100%;
+    height:100%;
+    overflow:auto;
+    background-color:rgb(0,0,0);
+    background-color:rgba(0,0,0,0.8);
 }
 
 
 .modal-content{
-  margin:auto;
-  background-color:#fff;
-  position:relative;
-  padding:0;
-  outline:0;
-  width:600px;
-  
+    z-index: 101;
+    position:relative;
+    max-height:100%;
+    text-align: center;
 }
 
 
@@ -296,7 +326,7 @@ table {
   background: rgba(255,255,255,0.75);
   margin: auto;
     border-collapse: collapse;
-    width: 70%;
+    width: 60%;
 }
 
 
@@ -308,6 +338,7 @@ td, th {
 
 .category {
   width: 15%;
+  text-align: right;
 }
 
 /* Map */
@@ -316,7 +347,7 @@ td, th {
        * element that contains the map. */
       #map {
         margin: auto;
-        height: 60vh;
+        height: 80vh;
         width: 60vw;
       }
     

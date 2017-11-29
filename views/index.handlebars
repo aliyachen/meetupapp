@@ -1,8 +1,6 @@
 
 
-    <!--bg image-->
-
- {{#if user}}
+    <!--bg image--> 
 <!--<div class="bgimage"></div>-->
 
 <body>
@@ -11,19 +9,22 @@
 	<p>
 		{{#each meetups}}
 		<div class="meetup">
+		<div class="thumbnail">
+			<a href="view/{{this.id}}/">
+				{{#if this.img}}
+				<img src="/uploads/{{ this.img }}" class="responsive-img">
+				{{else}}
+				<img src="/css/empty-photo.jpg" class="responsive-img">
+			{{/if}}
+			</a>
+		</div>
 		<a href="view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a><br>
-			<a href="edit/{{this.id}}/">edit</a>&nbsp;<a href="delete/{{this._id}}">delete</a>&nbsp;<a href="addimage/{{this.id}}/">add images</a>&nbsp;<a href="archive/{{this.id}}/">archive</a>
+			<a href="delete/{{this._id}}">delete</a>&nbsp;<a href="archive/{{this.id}}/">archive</a>
 		</div>
 		<br>
 		{{/each}}
 	</p>
 </div>
-{{else}}
-<div class="hometext">
-<h2 class="page-header">Meeting up with someone?</h2>
-<p>Login or register to keep track of all your meetups!</p>
-</div>
-{{/if}}
 </body>
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
 <script> 

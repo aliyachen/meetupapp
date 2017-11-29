@@ -4,34 +4,25 @@
 	<link rel="stylesheet" href="/css/style.css" />
 </head>
 
-    <!--bg image-->
-    <div class="bgimage"></div>
 <body>
- {{#if user}}
 <div>
 	<h1>{{ title }}</h1>
 	<p>
 		{{#each meetups}}
 		<div class="meetup">
+		<div class="thumbnail">
+		<a href="view/{{this.id}}/">
+			{{#if this.img}}
+			<img src="/uploads/{{ this.img }}" class="responsive-img">
+			{{else}}
+			<img src="/css/empty-photo.jpg" class="responsive-img">
+			{{/if}}
+		</a>
+		</div>
 		<a href="view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a><br>
-			<a href="edit/{{this.id}}/">edit</a>&nbsp;<a href="delete/{{this._id}}">delete</a>&nbsp;<a href="addimage/{{this.id}}/">add images</a>&nbsp;<a href="restore/{{this.id}}/">restore</a>
+		<a href="delete/{{this._id}}">delete</a>&nbsp;<a href="restore/{{this.id}}/">restore</a>
 		</div>
 		<br>
 		{{/each}}
 	</p>
 </div>
-{{else}}
-<div class="hometext">
-<h2 class="page-header">Meeting up with someone?</h2>
-<p>Login or register to keep track of all your meetups!</p>
-</div>
-{{/if}}
-</body>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
-<script> 
-    $(document).ready(function() {
-  $('.bgimage').on('webkitAnimationEnd', function(e) {
-    $(this).addClass('visible');
-  });
-});
-<{{!}}/script>
