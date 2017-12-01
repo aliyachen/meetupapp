@@ -11,30 +11,34 @@ This app allows users to record their meetups.
 * Get Google map directions for meetup location using Google Place Autocomplete and Directions API
 * View all meetups on a calendar using FullCalendar API
 * View gallery (images are sorted in descending order by meetup date) 
+* View other users/friends/friend requests, request, accept, or remove friends, view other users' meetups if friends
+* If another user's username is listed as a participant, the meetup is automatically added to the user's list
 
 ### To Fix 
 * Captions in image gallery = date or link to meetup
 * Meetups not showing up on calendar (fix string parsing?)
-* Error messages for registering/logging in not showing up
 * Keep previous value of meetup type as placeholder when editing a meetup
-* Bootstrap CSS on create and edit pages overriding personal CSS
+* Bootstrap, Materialize CSS on create, edit, profile pages overriding personal CSS
+* Simplify code 
 
-### Possible To Do
+### To Do
+* Sort friends, users, friend requests in alphabetical order
+* Add profile pic
+* View friends list on profile
+* Send email notifications for meetups, friend requests, etc.
+* Improve CSS/design (fade in, scroll animations, backgrounds, etc.)
+* Separate categories for meetups user has created and meetups user was added to
+
+### Tentative To Do
 * Add multiple images to a meetup
 * Delete images from a meetup, also delete images from storage if meetup is deleted
 * Click/expand image on meetup view
-* Improve CSS/design (fade in, scroll animations, etc.)
-* Form input for "recap" after a meetup is archived
 * Option to manually type in value for "Other" option for meetup type 
 * Display list of meetups on left and view meetups on right; all on same page 
 * Display weather forecast for each meetup
-* Send user an email/text message on date of meetup as reminder
 * Connect Facebook profile
-* User interaction: profiles, chatting, adding other users to a meetup, mutuals
-* Search users, add users to friends list, add users to a meetup (type in either username or email to participants field) and notify all users if they've been added (send email; user does not have to have an account on the app)
-* Add creator of meetup field to meetup details (only creator allowed to edit details?)
-* Option to comment on a meetup?
-* Separate categories for meetups user has created and meetups user was added to
+* Chatting
+* Option to comment on a meetup
 
 ### Frameworks
 * Node.js
