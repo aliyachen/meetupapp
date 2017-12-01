@@ -32,7 +32,7 @@
   {{#each meetups.participants}}
       <div><input type="text" name="updated_participants" value="{{this}}"  class="form-control"><a href="#" class="remove_field">Remove</a></div>
   {{else}} 
-    <div><input type="text" name="updated_participants" class="form-control"></div>
+    <div><input type="text" name="updated_participants" class="form-control" placeholder="Enter a username"></div>
 
     {{/each}}
     </p>
@@ -145,6 +145,10 @@ $(function(){
 {{/if}}
 
 <table>
+  <tr>
+    <td class="category">Creator</td>
+    <td>{{meetups.creator}}</td>
+  </tr>
   <tr>
     <td class="category">Type</td>
     <td>{{meetups.type}}</td>

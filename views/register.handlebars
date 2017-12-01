@@ -1,12 +1,15 @@
 <!--bg image-->
 <div class="staticbgimage"></div>
  <h2 class="page-header">Register</h2>
-<div class="form">
+ {{#if errmessage}}
+     <div class="alert alert-danger">{{errmessage}}</div>
+{{/if}}
 {{#if errors}}
       {{#each errors}}
-        <div class="alert alert-danger">{{msg}}</div>
+        <div class="alert alert-danger">{{this}}</div>
       {{/each}}
 {{/if}}
+<div class="form">
 <form method="post" action="/users/register">
    <div class="form-group">
     <label>Name</label>

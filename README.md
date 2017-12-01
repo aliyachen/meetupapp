@@ -22,7 +22,7 @@ This app allows users to record their meetups.
 ### Possible To Do
 * Add multiple images to a meetup
 * Delete images from a meetup, also delete images from storage if meetup is deleted
-* Click/expand image on meetup view, lightbox/slides for image gallery
+* Click/expand image on meetup view
 * Improve CSS/design (fade in, scroll animations, etc.)
 * Form input for "recap" after a meetup is archived
 * Option to manually type in value for "Other" option for meetup type 
@@ -31,6 +31,10 @@ This app allows users to record their meetups.
 * Send user an email/text message on date of meetup as reminder
 * Connect Facebook profile
 * User interaction: profiles, chatting, adding other users to a meetup, mutuals
+* Search users, add users to friends list, add users to a meetup (type in either username or email to participants field) and notify all users if they've been added (send email; user does not have to have an account on the app)
+* Add creator of meetup field to meetup details (only creator allowed to edit details?)
+* Option to comment on a meetup?
+* Separate categories for meetups user has created and meetups user was added to
 
 ### Frameworks
 * Node.js

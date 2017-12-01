@@ -1,8 +1,19 @@
 
 <td>
-  <ul>
-    {{#each userList}}
-      <li>{{name}}</li>
-    {{/each}}
-  </ul>
+<h1>{{ title }}</h1>
+  	{{#if allusers}}
+  	<h2>My Friends</h2>
+   		{{#each friendsList}}
+      		<p>  <a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}&nbsp<a href="removefriend/{{this._id}}">Remove Friend</a></p>
+    	{{/each}}
+    <h2>Other Users</h2>
+    	{{#each userList}}
+      		<p><a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}&nbsp<a href="requestfriend/{{this._id}}">Request Friend</a>&nbsp<a href="deleteuser/{{this._id}}">deletecompletelynotready</a></p>
+    	{{/each}}
+    {{else}}
+    	{{#each userList}}
+      		<p><a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}&nbsp<a href="acceptfriend/{{this._id}}">Accept Friend</a></p>
+    	{{/each}}
+
+    {{/if}}
 </td>

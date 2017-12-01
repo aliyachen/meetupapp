@@ -21,6 +21,7 @@
         <nav>
           <ul class="nav nav-pills">
             {{#if user}}
+              <li class="nav-item"><a class="nav-link" href="/profile">My Profile</a></li>
               <li class="nav-item"><a class="nav-link" href="/createMeetup">New</a></li>
               <li class="nav-item dropdown">
                 <a class="nav-link" href="/" class="dropbtn">All</a>
@@ -36,7 +37,13 @@
               <li class="nav-item"><a class="nav-link" href="/calendar">Calendar</a></li>
               <li class="nav-item"><a class="nav-link" href="/gallery">Gallery</a></li>
               <li class="nav-item"><a class="nav-link" href="/archive">Archive</a></li>
-<!--                <li class="nav-item"><a class="nav-link" href="/friends">All Users</a></li> -->
+               <li class="nav-item dropdown">
+                <a class="nav-link" href="/users" class="dropbtn">Connections</a>
+                <div class="dropdown-content">
+                  <a class="nav-link" href="/users">All Users</a>
+                  <a class="nav-link" href="/friendrequests">Requests</a>
+                </div>
+              </li>
               <li class="nav-item"><a class="nav-link" href="/users/logout">Logout</a></li>
             {{else}}
               <li class="nav-item"><a class="nav-link" href="/users/login">Login</a></li>

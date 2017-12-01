@@ -6,7 +6,6 @@ var bcrypt = require('bcryptjs');
 var User = mongoose.Schema({
 	username: {
 		type: String,
-		index:true
 	},
 	password: {
 		type: String
@@ -16,7 +15,19 @@ var User = mongoose.Schema({
 	},
 	name: {
 		type: String
-	}
+	},
+	profilepc: {
+		type: String
+	},
+	meetupslist: [{
+    	type: String
+	}],
+	friendslist: [{
+		friendid: String
+	}],
+	friendrequests: [{
+		friendid: String
+	}],
 });
 
 var User = module.exports = mongoose.model('User', User);

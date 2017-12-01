@@ -1,5 +1,8 @@
 
 	<link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/lightbox.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
+    <script src="/js/lightbox.js"><{{!}}/script>
 <h2 class="page-header">Gallery</h2>
 
 
@@ -8,7 +11,9 @@
     {{#each meetups}}
       {{#if this.img}} 
      <div class="galleryimg">
-	<img src="/uploads/{{ this.img }}" class="responsive-img hover-opacity" value="{{this.startdate}}: {{this.meetupName}}" style="float: left; cursor:pointer" name="added_imgs" onclick="onClick(this)">
+      <a href="/uploads/{{ this.img }}" data-lightbox="galleryimages">
+	     <img src="/uploads/{{ this.img }}" class="responsive-img hover-opacity" value="{{this.startdate}}: {{this.meetupName}}" style="float: left; cursor:pointer" name="added_imgs">
+      </a> 
   </div>
     {{/if}}
 	{{/each}}
@@ -23,12 +28,14 @@
 </div>
 
 <script>
-var captionText = document.getElementById("caption");
-function onClick(element) {
-  document.getElementById("img01").src = element.src;
-  document.getElementById("modal01").style.display = "block";
-  captionText.innerHTML = this.value;
-}
+var caption = $(this).value;
+lightbox.option({
+    'albumLabel': caption,
+    'resizeDuration': 0,
+    'imageFadeDuration': 200,
+    'fadeDuration': 300,
+    'wraparound': true
+})
 <{{!}}/script>
 
 
