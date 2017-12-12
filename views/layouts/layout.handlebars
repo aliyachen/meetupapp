@@ -1,30 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>MeetupApp</title>
-	<link rel="stylesheet" href="/css/bootstrap.css" />
-	<link rel="stylesheet" href="/css/style.css" />
+  <title>MeetupApp</title>
+  <link rel="stylesheet" href="/css/bootstrap.css" />
+  <link rel="stylesheet" href="/css/style.css" />
   <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:100|Lato:300|Raleway:300|Roboto:300,400|Work+Sans:300,400" rel="stylesheet">
 
 </head>
-<body>
+
 
       <div id="navi"></div>
       <div id="meetuptitle">
         {{#if user}}
-        <h4 class="apptitle">Welcome, {{user.name}}!</h3>
+        <h4 class="apptitle">Welcome, {{user.name}}!</h4>
         {{else}}
-        <h4 class="apptitle">MeetupApp</h3>
+        <a href="/users/login"><h4 class="apptitle">MeetupApp</h4></a>
         {{/if}}
       </div>
       <div class="navcontainer">
         <nav>
-          <ul class="nav nav-pills">
+          <ul class="nav">
             {{#if user}}
-              <li class="nav-item"><a class="nav-link" href="/profile">My Profile</a></li>
-              <li class="nav-item"><a class="nav-link" href="/createMeetup">New</a></li>
               <li class="nav-item dropdown">
-                <a class="nav-link" href="/" class="dropbtn">All</a>
+                <a class="nav-link" href="/profile" class="dropbtn">My Profile</a>
                 <div class="dropdown-content">
                   <a class="nav-link" href="/catchup">Catch-ups</a>
                  <a class="nav-link" href="/studydate">Study Dates</a>
@@ -34,11 +32,10 @@
                  <a class="nav-link" href="/other">Other</a>
                 </div>
               </li>
-              <li class="nav-item"><a class="nav-link" href="/calendar">Calendar</a></li>
+              <li class="nav-item"><a class="nav-link" href="/createMeetup">New</a></li>
               <li class="nav-item"><a class="nav-link" href="/gallery">Gallery</a></li>
-              <li class="nav-item"><a class="nav-link" href="/archive">Archive</a></li>
                <li class="nav-item dropdown">
-                <a class="nav-link" href="/users" class="dropbtn">Connections</a>
+                <a class="nav-link" href="/users" class="dropbtn">Connect</a>
                 <div class="dropdown-content">
                   <a class="nav-link" href="/users">All Users</a>
                   <a class="nav-link" href="/friendrequests">Requests</a>
@@ -46,29 +43,32 @@
               </li>
               <li class="nav-item"><a class="nav-link" href="/users/logout">Logout</a></li>
             {{else}}
-              <li class="nav-item"><a class="nav-link" href="/users/login">Login</a></li>
+              {{#if register}}
+              <li class="nav-item"><a class="nav-link" href="/users/login#loginpage">Login</a></li>
+              {{else}}
               <li class="nav-item"><a class="nav-link" href="/users/register">Register</a></li>
+              {{/if}}
             {{/if}}
           </ul>
         </nav>
       </div>
-	<div class="homecontainer">
+  <div class="homecontainer">
 
         <div class="row">
           <div class="col-lg-12">
-          	{{#if success_msg}}
-            	<div class="alert alert-success">{{success_msg}}</div>
-          	{{/if}}
+            {{#if success_msg}}
+              <div class="alert alert-success">{{success_msg}}</div>
+            {{/if}}
 
-          	{{#if error_msg}}
-            	<div class="alert alert-danger">{{error_msg}}</div>
-          	{{/if}}
+            {{#if error_msg}}
+              <div class="alert alert-danger">{{error_msg}}</div>
+            {{/if}}
 
-          	{{#if error}}
-            	<div class="alert alert-danger">{{error}}</div>
-          	{{/if}}
+            {{#if error}}
+              <div class="alert alert-danger">{{error}}</div>
+            {{/if}}
 
-          	{{{body}}}
+            {{{body}}}
           </div>
 
    
@@ -76,5 +76,15 @@
 
 
     </div> <!-- /container -->
-</body>
+
 </html>
+<!-- <script>
+  $('a').click(function(e) {
+e.preventDefault();
+newLocation = this.href;
+$('body').fadeOut('slow', newpage);
+});
+function newpage() {
+window.location = newLocation;
+}
+<{{!}}/script> -->

@@ -2,59 +2,235 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+  
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"><{{!}}/script>
 
   <!-- Compiled and minified JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"><{{!}}/script>
+ 
+
+
+
+    <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">{{!}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"><{{!}}/script>
+    <script data-require="moment.js@*" data-semver="2.14.1" src="https://npmcdn.com/moment@2.14.1"><{{!}}/script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"><{{!}}/script>
+       <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"><{{!}}/script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.js"><{{!}}/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.css" />
+ 
+
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 
+<div class="animate-in">
 
-<h4>{{userview.name}} ({{userview.username}})</h4>
+<div class="pagecontent">
 
+
+<h1>{{userview.name}} ({{userview.username}})</h1><hr>
+<div class="profileuploadandpic">
+	<div class="profilepic">
+		<p>
+		{{#if userview.profilepic}}
+			<img src="/uploads/{{ userview.profilepic }}" class="responsive-img" name="added_imgs">
+
+		{{else}}
+			<img src="/css/empty-photo.jpg" class="responsive-img">
+		{{/if}}
+		</p>
+
+	</div>
+	{{#if userequals}}
+	<div class="uploadprofile">
+  		<form method="post" action="/upload/{{user.id}}"  enctype="multipart/form-data" >
+  			<p>
+  			<input type="file" name="imgUploader" accept="image/*" value="/uploads/{{ user.profilepic }}">
+  			<input class="formbutton" type="submit" name="edit" value="Upload"></p>
+  		</form>
+	</div>
+	{{/if}}
+	<br>
+
+	{{#if friends}}
+	<div class="friendsbox">
+  	<h3 class="pagetitles" style="text-align:center;">Friends</h3><hr style="margin-top:0px">
+   		{{#each friendsList}}
+   		<div class="meetup" style="display:flex; align-items:center;margin-bottom:1px;">
+      		<div class="thumbnail">
+				<a href="profile/{{this.id}}/">
+					{{#if this.profilepic}}
+						<img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+					{{else}}
+						<img src="/css/empty-photo.jpg" class="responsive-img">
+					{{/if}}
+				</a>
+			</div>
+      		<a href="/profile/{{this.id}}/">{{name}}</a>
+      	</div>
+    	{{/each}}
+    </div>
+   	{{/if}}
+
+
+
+</div>
+
+	{{#if friends}}
+	{{else}}
+		<h6 style="text-align:left;padding-left:20px;float:left"> You aren't friends with {{userview.name}}. <a href={{requestlink}}>Add {{userview.name}}</a> as a friend to see more! </h6>
+	{{/if}}
+
+
+
+</div>
+
+
+<div class="infoprofile">
 {{#if friends}}
-	<p>
+	<div class="meetupbox">
+	
+	<h2 class="pagetitles">Upcoming</h2>
 	{{#if meetups}}
 		<ul class="collapsible" data-collapsible="accordion">
 			{{#each meetups}}
 					<div class="thumbnail">
 					{{#if this.img}}
-						<img src="/uploads/{{ this.img }}" class="responsive-img">
+						{{#if ../userequals}}
+							<a href="/view/{{this.id}}/"><img src="/uploads/{{ this.img.[0] }}" class="responsive-img"></a>
+						{{else}}
+							<img src="/uploads/{{ this.img.[0] }}" class="responsive-img">
+						{{/if}}
 					{{else}}
+						{{#if ../userequals}}<a href="/view/{{this.id}}/"><img src="/css/empty-photo.jpg" class="responsive-img"></a>
+						{{else}}
 						<img src="/css/empty-photo.jpg" class="responsive-img">
+						{{/if}}
 					{{/if}}
 					</div>
-
 					<li>
-						<div class="collapsible-header">{{this.startdate}} - {{this.meetupName}}</div>
-						<div class="collapsible-body"><span>
+						<div class="collapsible-header">
+							{{#if ../userequals}}<a href="/view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a>
+							{{else}}
+							{{this.startdate}} - {{this.meetupName}}
+							{{/if}}
+						</div>
+
+						<div class="collapsible-body" style="text-align:left;"><span>
 							<p>Creator: {{this.creator}}</p>
-							<p>Participants: {{this.participants}}</p>
 							<p>Date: {{this.startdate}} - {{this.enddate}}</p>
-
-
-
-
+							<p>Participants: {{#each this.participants}}{{this}}, {{/each}}</p>
+							<p>Location: {{this.location}}</p>
+							{{#if ../userequals}}<p><a href="delete/{{this._id}}">DELETE</a>&nbsp; | &nbsp;<a href="archive/{{this.id}}/">ARCHIVE</a></p>{{/if}}
 						</span></div>
 					</li>
-				<br>
 			{{/each}}
 		</ul>
+
 	{{else}}
-	<p> No meetups to show. <a href="/createmeetup">Create a meetup</a> with {{userview.name}}!</p>
+	{{#if userequals}}
+		<p style="text-align:left;"> No meetups to show. <a href="/createmeetup">Create a meetup!</a></p>
+	{{else if friends}}
+		<p style="text-align:left;"> No meetups to show. <a href="/createmeetup">Create a meetup</a> with {{userview.name}}!</p>
+	{{/if}}
 	{{/if}}
 	</p>
-{{else}}
-	<p> You aren't friends with {{userview.name}}. <a href={{requestlink}}>Add {{userview.name}}</a> as a friend to see more! </p>
+	</div>
 
+
+	<div class="meetupboxpast">
+	<h2 class="pagetitles">Past</h2>
+	{{#if pastmeetups}}
+		<ul class="collapsible" data-collapsible="accordion">
+			{{#each pastmeetups}}
+					<div class="thumbnail">
+					{{#if this.img}}
+						{{#if ../userequals}}<a href="/view/{{this.id}}/"><img src="/uploads/{{ this.img.[0] }}" class="responsive-img"></a>
+						{{else}}
+						<img src="/uploads/{{ this.img.[0] }}" class="responsive-img">
+						{{/if}}
+					{{else}}
+						{{#if ../userequals}}<a href="/view/{{this.id}}/"><img src="/css/empty-photo.jpg" class="responsive-img"></a>
+						{{else}}
+						<img src="/css/empty-photo.jpg" class="responsive-img">
+						{{/if}}
+					{{/if}}
+					</div>
+					<li>
+						<div class="collapsible-header">
+							{{#if ../userequals}}<a href="/view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a>
+							{{else}}
+							{{this.startdate}} - {{this.meetupName}}
+							{{/if}}
+						</div>
+						<div class="collapsible-body" style="text-align:left;"><span>
+							<p>Creator: {{this.creator}}</p>
+							<p>Date: {{this.startdate}} - {{this.enddate}}</p>
+							<p>Participants: {{#each this.participants}}{{this}}, {{/each}}</p>
+							<p>Location: {{this.location}}</p>
+							{{#if ../userequals}}<p><a href="delete/{{this._id}}">DELETE</a>&nbsp; | &nbsp;<a href="restore/{{this.id}}/">RESTORE</a></p>{{/if}}
+						</span></div>
+					</li>
+			{{/each}}
+		</ul>
+
+	{{else}}
+
+			<p style="text-align:left;"> No archived meetups to show.</p>
+			
 	{{/if}}
+	</div>
+
+{{#if userequals}}
+	<br>
+	<div class="animate-in calendar">
+    <div id="calendar" class="animate-in"></div>
+    <div id="events" style="display:none;">{{{events}}}</div>
+  </div>
+  {{/if}}
+
+
+
+
+{{/if}}
+</div>
+</div>
+</div>
 </body>
 
-<script>
-  $(document).ready(function(){
-    $('.collapsible').collapsible();
-  });
+
+
+<script type="text/javascript">    
+    $(document).ready(function() {
+    if ($('.profilepic img').width() > $('.profilepic img').height()) {
+    	$('.profilepic img').addClass('landscape');
+    }
+     $('.collapsible').collapsible();
+	   var eventsdata = document.getElementById("events").value;
+       eventsdata = $('#events').text();
+       eventsdata = JSON.parse(eventsdata);
+       console.log(eventsdata);
+        $('#calendar').fullCalendar({
+    	   events: eventsdata,
+    	   aspectRatio: 2,
+    	   eventMouseover: function(calEvent, jsEvent) {
+    	   		var start = moment(calEvent.start).format("HH:mm A");
+    			var tooltip = '<div class="tooltipevent" style="width:175px;height:100px;background:white;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);border-radius:5px;display:flex;align-items:center;justify-content:center;position:absolute;z-index:10001;">' + calEvent.title + '<br>' + start + '</div>';
+    			$("body").append(tooltip);
+    			$(this).mouseover(function(e) {
+        			$(this).css('z-index', 10000);
+        			$('.tooltipevent').fadeIn('500');
+        			$('.tooltipevent').fadeTo('10', 1.9);
+    			}).mousemove(function(e) {
+        			$('.tooltipevent').css('top', e.pageY + 10);
+        			$('.tooltipevent').css('left', e.pageX + 20);
+    			});
+			},
+
+		eventMouseout: function(calEvent, jsEvent) {
+     		$(this).css('z-index', 8);
+     		$('.tooltipevent').remove();
+		},
+        });
+    });
 <{{!}}/script>

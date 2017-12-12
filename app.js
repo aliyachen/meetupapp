@@ -113,7 +113,7 @@ var Meetup = mongoose.model('Meetup', {
 		type: String
 	},
 	img: {
-		type: String
+		type: Array
 	},
 	status: {
 		type: String,
@@ -143,7 +143,6 @@ function ensureAuthenticated(req, res, next){
 
 
 //upload images
-
 //set storage
 var storage = multer.diskStorage({
 	destination: function(req, file, cb) {
@@ -181,48 +180,58 @@ function sortByDate(arrayOfMeetups) {
 	});
 }
 
+//sort users alphabetically
+function sortAlphabetically(arrayOfUsers) {
+	arrayOfUsers.sort (function (a, b) {
+    	return a.name.localeCompare(b.name);
+	});
+}
+
 function getUserMeetups(user, meetupArray, status, done) {
 	var meetupslist = user.meetupslist;
 	async.each(meetupslist, function(meetupId, next) {
 		Meetup.findById(meetupId, function (err, meetup) {
-			console.log("hello???");
 			if (err) {
 				console.log(err);
 			}
 			else  {
 				console.log(meetup.meetupName);
 				if (meetup.status == status) {
-					console.log("im pusshing");
 					meetupArray.push(meetup);
 				}
 			next();
 			}
 		})
 	}, function(err) {
-		console.log("not supposed to be here");
 		sortByDate(meetupArray);
 		done(null, meetupArray)
 	});
 }
 
+
 function renderUserMeetups(user, userview, res, renderurl, title, friends) {
 	var meetupArray = [];
+	var friendArray = [];
 	async.waterfall([
 		function first(done) {
-			getUserMeetups(user, meetupArray, 'current', done);
+			getUserMeetups(userview, meetupArray, 'current', done);
 		},
 		function second(meetupArray, done) {
-			console.log("beter not be here");
 			meetupArray = meetupArray;
 			done(null, meetupArray)
 		},
 		function third(meetupArray, done) {
+			var userequals = false;
+			if (user.id.toString() == userview.id.toString()) {
+				userequals = true;
+			}
 			res.render(renderurl, {
 				title: title,
 				user: user,
 				userview: userview,
 				meetups: meetupArray,
-				friends: friends
+				friends: friends,
+				userequals: userequals
 			});
 			done(null)
 		}
@@ -233,71 +242,66 @@ function renderUserMeetups(user, userview, res, renderurl, title, friends) {
 	});
 
 }
-//read
-app.get('/', ensureAuthenticated, function(req, res) {
-		console.log(req.user);
-	// 	var query = { status: 'current', userid: req.user.id };
-	// Meetup.find(query, function(err, arrayOfMeetups) {
-	// 	 sortByDate(arrayOfMeetups);
-	// 	res.render('index', {
-	// 		user: req.user,
-	// 		meetups: arrayOfMeetups
-	// 	});
-	// });
-
-	renderUserMeetups(req.user, null, res, 'index', 'My Meetups', false);
-	// var meetupArray = [];
-	// async.waterfall([
-	// 	function first(done) {
-	// 		getUserMeetups(req.user, meetupArray, 'current', done);
-	// 	},
-	// 	function second(meetupArray, done) {
-	// 		console.log("beter not be here");
-	// 		meetupArray = meetupArray;
-	// 		done(null, meetupArray)
-	// 	},
-	// 	function third(meetupArray, done) {
-	// 		res.render('index', {
-	// 			title: 'My Meetups',
-	// 			user: req.user,
-	// 			meetups: meetupArray
-	// 		});
-	// 		done(null)
-	// 	}
-	// ], function (err) {
-	// 	if (err) {
-	// 		console.log(err);
-	// 	}
-	// });
-});
 
 
-
-//get image gallery
-app.get('/gallery', ensureAuthenticated, function (req, res) {
-	var query = { userid: req.user.id };
-	Meetup.find(query, function(err, arrayOfMeetups){
-		sortByDate(arrayOfMeetups);
-		arrayOfMeetups.reverse();
-		res.render('gallery', { 
-			meetups: arrayOfMeetups,
-			user: req.user
-		});
+function getUserMeetupsIndex(user, meetupArray1, meetupArray2, status1, done) {
+	var meetupslist = user.meetupslist;
+	async.each(meetupslist, function(meetupId, next) {
+		Meetup.findById(meetupId, function (err, meetup) {
+			if (err) {
+				console.log(err);
+			}
+			else  {
+				if (meetup.status == status1) {
+					meetupArray1.push(meetup);
+				} else {
+					meetupArray2.push(meetup);
+				}
+			next();
+			}
+		})
+	}, function(err) {
+		sortByDate(meetupArray2);
+		sortByDate(meetupArray2)
+		done(null, meetupArray1, meetupArray2)
 	});
-	
-});
+}
 
+function getUserFriendsIndex(user, userview, friendArray, meetupArray, meetupArray2, done) {
+	var friendslist = userview.friendslist;
+	async.each(friendslist, function(friendsId, next) {
+		User.findById(friendsId, function (err, friend) {
+			if (err) {
+				console.log(err);
+			}
+			else  {
+				console.log(friend.name);
+				friendArray.push(friend);
+			next();
+			}
+		})
+	}, function(err) {
+		sortAlphabetically(friendArray);
+		done(null, meetupArray, meetupArray2, friendArray)
+	});
+}
 
-//get calendar
-app.get('/calendar', ensureAuthenticated, function (req, res) {
+function renderUserMeetupsCalendar(user, userview, res, renderurl, title, friends, userequals) {
 	var meetupArray = [];
+	var meetupArray2 = [];
+	var friendArray = [];
 	var events = [];
 	async.waterfall([
 		function first(done) {
-			getUserMeetups(req.user, meetupArray, 'current', done);
+			getUserMeetupsIndex(userview, meetupArray, meetupArray2, 'current', done);
 		},
-		function second(meetupArray, done) {
+		function second(meetupArray, meetupArray2, done) {
+			getUserFriendsIndex(user, userview, friendArray, meetupArray, meetupArray2, done);
+		},
+		function third(meetupArray, meetupArray2, friendArray, done) {
 			meetupArray = meetupArray;
+			meetupArray2 = meetupArray2;
+			friendArray - friendArray;
 			meetupArray.forEach(function(e) {
 				var startstr = e.startdate;
 				if (startstr.charAt(12) == ':') {
@@ -308,9 +312,7 @@ app.get('/calendar', ensureAuthenticated, function (req, res) {
 		    	var startyear = startstr.slice(6, 10);
   		  		var starthour = startstr.slice(11, 13);
     			var startmin = startstr.slice(14, 16);
-    			var startdate = startyear + "-" +  startmonth + "-" + startday + " " + starthour + ":" + startmin + ":00";
-    			startdate = (moment(startdate).unix() )*1000;
-    			console.log(startdate);
+    			var startdate = startyear + "-" +  startmonth + "-" + startday + "T" + starthour + ":" + startmin + ":00";
 
 				var endstr = e.startdate;
 				if (endstr.charAt(12) == ':') {
@@ -321,23 +323,84 @@ app.get('/calendar', ensureAuthenticated, function (req, res) {
     			var endyear = endstr.slice(6, 10);
     			var endhour = endstr.slice(11, 13);
     			var endmin = endstr.slice(14, 16);
-    			var enddate = endyear + "-" +  endmonth + "-" + endday + " " + endhour + ":" + endmin + ":00";
-    			enddate = (moment(enddate).unix() )*1000;
-    			console.log(enddate);
-    			console.log(e.meetupName);
+    			var enddate = endyear + "-" +  endmonth + "-" + endday + "T" + endhour + ":" + endmin + ":00";
     			events.push({
     				start: startdate,
     				end: enddate,
-    				title: e.meetupName
+    				title: e.meetupName,
+    				url: '/view/' + e.id + '/',
+    				backgroundColor: '#A9A9A9',
+    				borderColor: '#A9A9A9'
     			});
     		});
-			done(null, meetupArray, events)
+			done(null, meetupArray, meetupArray2, friendArray, events)
 		},
-		function third(meetupArray, events, done) {
-			res.render('calendar', { 
+		function fourth(meetupArray, meetupArray2, friendArray, events, done) {
+			res.render(renderurl, {
+				title: title,
+				user: user,
+				userview: userview,
 				meetups: meetupArray,
+				pastmeetups: meetupArray2,
+				events: JSON.stringify(events),
+				friends: friends,
+				friendsList: friendArray,
+				userequals: userequals,
+				index: true
+			});
+			done(null)
+		}
+
+	], function (err) {
+		if (err) {
+			console.log(err);
+		}
+	});
+
+}
+
+
+
+
+
+//read
+app.get('/', ensureAuthenticated, function(req, res) {
+		console.log(req.user);
+	renderUserMeetupsCalendar(req.user, req.user, res, 'profile', 'Upcoming', false, true);
+});
+
+
+
+//get image gallery
+app.get('/gallery', ensureAuthenticated, function (req, res) {
+	var meetupArray = [];
+	async.waterfall([
+		function first(done) {
+			var meetupslist = req.user.meetupslist;
+			async.each(meetupslist, function(meetupId, next) {
+				Meetup.findById(meetupId, function (err, meetup) {
+					if (err) {
+						console.log(err);
+					}
+					else  {
+						meetupArray.push(meetup);
+						next();
+					}
+				})
+			}, function(err) {
+				sortByDate(meetupArray);
+				done(null, meetupArray)
+			});
+		},
+		function second(meetupArray, done) {
+			meetupArray = meetupArray;
+			done(null, meetupArray)
+		},
+		function third(meetupArray, done) {
+			meetupArray.reverse();
+			res.render('gallery', {
 				user: req.user,
-				events: events
+				meetups: meetupArray
 			});
 			done(null)
 		}
@@ -348,7 +411,6 @@ app.get('/calendar', ensureAuthenticated, function (req, res) {
 	});
 	
 });
-
 
 
 //create
@@ -364,7 +426,6 @@ app.get('/createMeetup', ensureAuthenticated, function (req, res) {
    	 mm = '0'+mm
 	} 
 	today = mm + '/' + dd + '/' + yyyy;
-	console.log("user: " + req.user.id);
 	res.render('createMeetup', { 
 		user: req.user,
 		date: today
@@ -401,7 +462,7 @@ app.post('/createMeetup', function(req, res){
 				meetups: toHBS
 			}
 		});
-		res.redirect('/');
+		res.redirect('/profile');
 	});
 })
 
@@ -434,10 +495,22 @@ app.get('/edit/:id/', ensureAuthenticated, function(req, res) {
 })
 
 //update
-app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
-	console.log("Reached")
+app.post('/update/:id', upload.array('imgUploader', 10), function(req, res) {
+	var files = [];
+	for (var i = 0; i < req.files.length; i++) {
+		files[i] = req.files[i].filename;
+	}
+
 	var id = req.params.id;
-	if (req.file) {
+	var meetupHasImage = false;
+	Meetup.findById(id, function(err, meetup) {
+		console.log("meetupimagelength: " + meetup.img.length);
+		if (meetup.img.length > 0) {
+			meetupHasImage = true;
+		}
+	})
+	if (files.length > 0) {
+		console.log("REQ HAS FILES?????");
 		Meetup.findById(id, function(err, meetup){
 			meetup.meetupName = req.body.updated_meetupName,
 			meetup.participants = req.body.updated_participants,
@@ -446,7 +519,7 @@ app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
 			meetup.enddate = req.body.updated_enddate,
 			meetup.location = req.body.updated_location,
 			meetup.notes = req.body.updated_notes,
-			meetup.img = req.file.filename,
+			meetup.img = files,
 			meetup.save( function(err) {
 				if(err) {
 					console.log(err);
@@ -454,7 +527,7 @@ app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
 					console.log("saved");
 				}
 			});
-			return res.redirect('/');
+			return res.redirect('/profile');
 		});
 	} else {
 		Meetup.findById(id, function(err, meetup){
@@ -465,6 +538,7 @@ app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
 			meetup.enddate = req.body.updated_enddate,
 			meetup.location = req.body.updated_location,
 			meetup.notes = req.body.updated_notes,
+			meetup.img = meetup.img,
 			meetup.save( function(err) {
 				if(err) {
 					console.log(err);
@@ -475,6 +549,8 @@ app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
     					} else {
     						arrayOfUsers.forEach(function (user) {
     							if (user.username != meetup.creator) {
+    								if (meetup.participants) {
+    									
     							var pindex = meetup.participants.indexOf(user.username);
     								//if user is not in the list of participants
     								if (pindex < 0) {
@@ -486,10 +562,12 @@ app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
 										user.save();
     								}
     							}
+    								}
     						})
     					}
  					});
-					meetup.participants.forEach(function (participant) {
+ 					if (meetup.participants) {
+ 						meetup.participants.forEach(function (participant) {
 						User.getUserByUsername(participant, function(err, user){
   							if(err) throw err;
   							if(user){
@@ -501,10 +579,12 @@ app.post('/update/:id', upload.single('imgUploader'), function(req, res) {
 			  				}
 						});
 					});
+ 					}
+					
 					console.log("saved");
 				}
 			});
-			return res.redirect('/');
+			return res.redirect('/profile');
 		});
 	}
 })
@@ -548,13 +628,12 @@ app.get('/delete/:id', function(req, res) {
 			return err
 		}
 	});
-	return res.redirect('/');
+	return res.redirect('/profile');
 })
 
 //archive
 app.get('/archive/:id', function(req, res) {
 	var id = req.params.id;
-	console.log("ARCHIVE ID: " + id)
 	Meetup.findById(id, function(err, meetup){
 		meetup.status = 'past',
 		meetup.save( function(err) {
@@ -566,7 +645,7 @@ app.get('/archive/:id', function(req, res) {
 			}
 		});
 		req.user.save();
-		return res.redirect('/');
+		return res.redirect('/profile');
 	});
 })
 
@@ -584,7 +663,7 @@ app.get('/restore/:id', function(req, res) {
 			}
 		});
 		req.user.save();
-		return res.redirect('/archive');
+		return res.redirect('/profile');
 	});
 })
 
@@ -599,14 +678,12 @@ function getUserMeetupsByCategory(user, type, meetupArray, done) {
 			else  {
 				console.log(meetup.meetupName);
 				if (meetup.status == 'current' && meetup.type == type) {
-					console.log("im pusshing");
 					meetupArray.push(meetup);
 				}
 			next();
 			}
 		})
 	}, function(err) {
-		console.log("not supposed to be here");
 		sortByDate(meetupArray);
 		done(null, meetupArray)
 	});
@@ -635,7 +712,8 @@ function getCategoryPages(url, type, pagetitle) {
 				res.render('index', {
 					title: pagetitle,
 					user: req.user,
-					meetups: meetupArray
+					meetups: meetupArray,
+					category: true
 				});
 				done(null)
 			}
@@ -714,6 +792,8 @@ app.get('/users', ensureAuthenticated, function(req, res) {
     					arrayOfUsers.splice(index, 1);
     				}
     				userarray = arrayOfUsers;
+    				sortAlphabetically(friendArray);
+    				sortAlphabetically(userarray);
     				done(null, friendArray, userarray)
    			 	}
   			});
@@ -750,7 +830,7 @@ function getUserFriends(user, friendArray, done) {
 			}
 		})
 	}, function(err) {
-		//sortByAlphabetical(friendArray);
+		sortAlphabetically(friendArray);
 		done(null, friendArray)
 	});
 }
@@ -770,25 +850,54 @@ function getUserFriendRequests(user, friendArray, done) {
 			}
 		})
 	}, function(err) {
-		//sortByAlphabetical(friendArray);
+		sortAlphabetically(friendArray);
 		done(null, friendArray)
 	});
 }
 
 app.get('/friendrequests', ensureAuthenticated, function(req, res) {
-	var friendreqArray = [];
+	var incomingfriendreqArray = [];
+	var outgoingfriendreqArray = [];
 	async.waterfall([
 		function first(done) {
-			getUserFriendRequests(req.user, friendreqArray, done);
+			getUserFriendRequests(req.user, incomingfriendreqArray, done);
 		},
-		function second(friendArray, done) {
-			friendreqArray = friendreqArray;
-			done(null, friendArray)
+		function second(incomingfriendreqArray, done) {
+			incomingfriendreqArray = incomingfriendreqArray;
+			done(null, incomingfriendreqArray)
 		},
-		function third(friendArray, done) {
+		function third(incomingfriendreqArray, done) {
+			//find all users
+			User.find(function (err, arrayOfUsers) {
+    			if (err) {
+    				console.log('cannot find users');
+    			} else {
+    				arrayOfUsers.forEach(function (user) { 
+    				//find  
+    					var index = -1;
+						user.friendrequests.some(function(obj, idx){
+							if (obj._id.toString() === req.user.id.toString()) {
+								index = idx;
+								return true;
+							}
+						});
+						if (index > -1) {
+    						outgoingfriendreqArray.push(user);
+						}	
+    				})
+    					outgoingfriendreqArray = outgoingfriendreqArray;
+    					sortAlphabetically(incomingfriendreqArray);
+    					sortAlphabetically(outgoingfriendreqArray);
+    					done(null, incomingfriendreqArray, outgoingfriendreqArray)
+   			 	}
+  			});
+
+		},
+		function fourth(incomingfriendreqArray, outgoingfriendreqArray, done) {
 			 res.render('users', { 
     			title: 'Friend Requests',
-    			userList : friendArray,
+    			incomingList : incomingfriendreqArray,
+    			outgoingList : outgoingfriendreqArray,
     			allusers: false,
     			friendrequests: true
     		});
@@ -802,8 +911,6 @@ app.get('/friendrequests', ensureAuthenticated, function(req, res) {
 });
 
 app.get('/requestfriend/:id', function(req, res) {
-	console.log("request friend of" + req.params.id);
-	console.log(req.user.id);
 	var thisid = req.user.id;
 	var thatid = req.params.id;
 	User.findById(thatid, function(err, user) {
@@ -824,7 +931,7 @@ app.get('/requestfriend/:id', function(req, res) {
 			console.log(err);
 		}
 	});
-  res.redirect('/');
+  res.redirect('/friendrequests ');
 })
 
 app.get('/acceptfriend/:id', function(req, res) {
@@ -885,7 +992,7 @@ app.get('/acceptfriend/:id', function(req, res) {
 			console.log(err);
 		}
 	});
-  res.redirect('/');
+  res.redirect('/users');
 })
 
 app.get('/removefriend/:id', function(req, res) {
@@ -894,8 +1001,16 @@ app.get('/removefriend/:id', function(req, res) {
 	//remove friend from both users
 	User.findById(thisid, function(err, user) {
 		if (!err) {
-			var index = user.friendslist.indexOf(thatid);
-			user.friendslist.splice(index, 1);
+			var index = -1;
+			user.friendslist.some(function(obj, idx) {
+				if (obj._id.toString() === thatid.toString()) {
+					index = idx;
+					return true;
+				}
+			});
+			if (index > -1) {
+				user.friendslist.splice(index, 1);
+			}
 			user.save();
 
 		} else {
@@ -904,15 +1019,23 @@ app.get('/removefriend/:id', function(req, res) {
 	});
 	User.findById(thatid, function(err, user) {
 		if (!err) {
-			var index = user.friendslist.indexOf(thisid);
-			user.friendslist.splice(index, 1);
-			user.save();
 
+			var index = -1;
+			user.friendslist.some(function(obj, idx) {
+				if (obj._id.toString() === thisid.toString()) {
+					index = idx;
+					return true;
+				}
+			});
+			if (index > -1) {
+				user.friendslist.splice(index, 1);
+			}
+			user.save();
 		} else {
 			console.log(err);
 		}
 	});
-  res.redirect('/');
+  res.redirect('/users');
 })
 
 //view my profile
@@ -921,8 +1044,29 @@ app.get('/profile', ensureAuthenticated, function(req, res) {
 	User.findOne({
 		_id: id
 	}, function(err, user) {
-		renderUserMeetups(req.user, user, res, 'profile', user.name, true);
+		renderUserMeetupsCalendar(req.user, user, res, 'profile', 'Upcoming', true, true);
+		//renderUserMeetups(req.user, user, res, 'profile', user.name, true);
 	});
+})
+
+//upload profile pic
+app.post('/upload/:id', upload.single('imgUploader'), function(req, res) {
+	var id = req.params.id;
+	if (req.file) {
+		User.findById(id, function(err, user){
+			user.profilepic = req.file.filename, 
+			user.save(function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log('saved');
+				}
+			});
+			renderUserMeetupsCalendar(req.user, user, res, 'profile', user.name, true, true);
+		})
+	} else {
+		console.log("no file selected");
+	}
 })
 
 //view other user profile
@@ -939,15 +1083,22 @@ app.get('/profile/:id', ensureAuthenticated, function(req, res) {
 			})
 			//display details if friends
 			if (index > -1) {
-				renderUserMeetups(req.user, user, res, 'profile', user.name, true);
+				renderUserMeetupsCalendar(req.user, user, res, 'profile', 'Upcoming', true, false);
 			} else {
-				res.render('profile', {
-					userid: id,
-					requestlink: "/requestfriend/" + id,
-					user: req.user,
-					userview: user,
-					friends: false
-				});
+				var userequals = false;
+				if (user.id.toString() == req.user.id.toString()){
+					userequals = true;
+					res.redirect('/profile');
+				} else {
+					res.render('profile', {
+						userid: id,
+						requestlink: "/requestfriend/" + id,
+						user: req.user,
+						userview: user,
+						friends: false,
+						userequals: userequals
+					});
+				}
 			}
 		} else {
 			console.log(err);
@@ -957,7 +1108,6 @@ app.get('/profile/:id', ensureAuthenticated, function(req, res) {
 
 
 app.get('/deleteuser/:id', function(req, res) {
-	console.log(req.params.id);
 	var username = "";
 	User.findById(req.params.id, function(err, user) {
 		if (!err) {
@@ -972,7 +1122,13 @@ app.get('/deleteuser/:id', function(req, res) {
     		console.log('cannot find users');
     	} else {
     		arrayOfUsers.forEach(function (user) {
-    			var index = user.friendslist.indexOf(req.params.id);
+    			var index = -1;
+				user.friendslist.some(function(obj, idx){
+					if (obj._id.toString() === req.params.id.toString()) {
+						index = idx;
+						return true;
+					}
+				})
 				if (index > -1) {
 					user.friendslist.splice(index, 1);
 				}

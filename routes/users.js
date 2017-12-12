@@ -6,12 +6,15 @@ var User = require('../models/user');
 var async = require('async');
 //register
 router.get('/register', function(req, res) {
-	res.render('register');
+	res.render('register', {
+		register: true
+	});
 });
 
 //login
 router.get('/login', function(req, res) {
 	res.render('login');
+
 });
 
 
@@ -103,7 +106,7 @@ router.post('/register', function(req, res) {
 				});
 
 				req.flash('success_msg', 'You are registered and can now login!');
-				res.redirect('/users/login');
+				res.redirect('/users/login#loginpage');
 			}
 			done(null)
 		}
@@ -174,9 +177,9 @@ passport.deserializeUser(function(id, done) {
 });
 
 router.post('/login',
-  passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login', faliureFlash: true}),
+  passport.authenticate('local', {successRedirect: '/profile', failureRedirect: '/users/login', faliureFlash: true}),
   function(req, res) {
-    res.redirect('/'); //redirect to dashboard
+    res.redirect('/profile'); //redirect to dashboard
   });
 
 router.get('/logout', function(req, res) {

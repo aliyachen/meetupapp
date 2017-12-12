@@ -1,36 +1,120 @@
 
 
-    <!--bg image--> 
-<!--<div class="bgimage"></div>-->
+<head>
+	<script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">{{!}}</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"><{{!}}/script>
+    <script data-require="moment.js@*" data-semver="2.14.1" src="https://npmcdn.com/moment@2.14.1"><{{!}}/script>
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"><{{!}}/script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"><{{!}}/script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.js"><{{!}}/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.css" />
+</head>
 
 <body>
-<div>
-	<h1>{{ title }}</h1>
-	<p>
-		{{#each meetups}}
-		<div class="meetup">
-			<div class="thumbnail">
-				<a href="view/{{this.id}}/">
+
+<div class="animate-in topmeetups">
+<h1 class="pagetitles">{{ title }}</h1><hr>
+{{#if meetups}}
+		<ul class="collapsible" data-collapsible="accordion">
+			{{#each meetups}}
+					<div class="thumbnail">
 					{{#if this.img}}
-						<img src="/uploads/{{ this.img }}" class="responsive-img">
+						<img src="/uploads/{{ this.img.[0] }}" class="responsive-img">
 					{{else}}
 						<img src="/css/empty-photo.jpg" class="responsive-img">
 					{{/if}}
-				</a>
-			</div>
+					</div>
+					<li>
+						<div class="collapsible-header"><a href="view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a></div>
+						<div class="collapsible-body" style="text-align:left;"><span>
+							<p>Creator: {{this.creator}}</p>
+							<p>Date: {{this.startdate}} - {{this.enddate}}</p>
+							<p>Participants: {{#each this.participants}}{{this}}, {{/each}}</p>
+							<p>Location: {{this.location}}</p>
+							<p><a href="delete/{{this._id}}">DELETE</a>&nbsp; | &nbsp;<a href="archive/{{this.id}}/">ARCHIVE</a></p>
+						</span></div>
+					</li>
+			{{/each}}
+		</ul>
+
+{{/if}}
+
+
+
+	{{#if index}}
+	<div class="meetupboxpast">
+	<h1 class="pagetitles">Past</h1><hr>
+	<p>
+		{{#each pastmeetups}}
+		<div class="meetup">
+		<div class="thumbnail">
+		<a href="view/{{this.id}}/">
+			{{#if this.img}}
+			<img src="/uploads/{{ this.img.[0] }}" class="responsive-img">
+			{{else}}
+			<img src="/css/empty-photo.jpg" class="responsive-img">
+			{{/if}}
+		</a>
+		</div>
 		<a href="view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a><br>
-			<a href="delete/{{this._id}}">delete</a>&nbsp;<a href="archive/{{this.id}}/">archive</a>
+		<a href="delete/{{this._id}}">delete</a>&nbsp;<a href="restore/{{this.id}}/">restore</a>
 		</div>
 		<br>
 		{{/each}}
 	</p>
+	</div>
+	{{/if}}
+
+
+	{{#if index}}
+	<br>
+	<div class="animate-in calendar">
+		<h1 class="pagetitles">Calendar</h1><hr>
+    <div id="calendar" class="animate-in"></div>
+    <div id="events" style="display:none;">{{{events}}}</div>
+  </div>
+  {{/if}}
+
 </div>
+
+
+
 </body>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
 <script> 
     $(document).ready(function() {
-  $('.bgimage').on('webkitAnimationEnd', function(e) {
-    $(this).addClass('visible');
-  });
-});
+  		$('.bgimage').on('webkitAnimationEnd', function(e) {
+   			$(this).addClass('visible');
+  		});
+	});
+<{{!}}/script>
+
+<script type="text/javascript">    
+    $(document).ready(function() {
+	   var eventsdata = document.getElementById("events").value;
+       eventsdata = $('#events').text();
+       eventsdata = JSON.parse(eventsdata);
+       console.log(eventsdata);
+        $('#calendar').fullCalendar({
+    	   events: eventsdata,
+    	   aspectRatio: 2,
+    	   eventMouseover: function(calEvent, jsEvent) {
+    	   		var start = moment(calEvent.start).format("HH:mm A");
+    			var tooltip = '<div class="tooltipevent" style="width:150px;height:80px;background:#ccc;display:flex;align-items:center;justify-content:center;position:absolute;z-index:10001;">' + calEvent.title + '<br>' + start + '</div>';
+    			$("body").append(tooltip);
+    			$(this).mouseover(function(e) {
+        			$(this).css('z-index', 10000);
+        			$('.tooltipevent').fadeIn('500');
+        			$('.tooltipevent').fadeTo('10', 1.9);
+    			}).mousemove(function(e) {
+        			$('.tooltipevent').css('top', e.pageY + 10);
+        			$('.tooltipevent').css('left', e.pageX + 20);
+    			});
+			},
+
+		eventMouseout: function(calEvent, jsEvent) {
+     		$(this).css('z-index', 8);
+     		$('.tooltipevent').remove();
+		},
+        });
+    });
 <{{!}}/script>

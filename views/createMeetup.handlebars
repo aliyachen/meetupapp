@@ -20,24 +20,19 @@
 
 	<link rel="stylesheet" href="/css/style.css" />
 
-
+<div class="animate-in">
 <div class="notebookbg"></div>
-<h2>Add Meetup</h2>
-<div class="form">
-<form method="post">
-	<p>Meetup<br>
-	<input class="form-control" type="text" name="meetupName" placeholder="Meetup Name">
-	</p>
-
-	<p>Participants<br>
-	<div class="input_fields_wrap">
-    <button class="add_field_button">Add</button>
-    <div><input type="text" name="participants" class="form-control" placeholder="Enter a username"></div>
-	</div>
-
-	</p>
-	<br>
-	<p>Type<br>
+<h1 class="pagetitles" style="color:white;">Create Meetup</h1><hr>
+    <div class="form">
+    <form method="post">
+	   <label>Name</label>
+	   <input class="form-control" type="text" name="meetupName" placeholder="Meetup Name">
+	   <label>Participants</label>
+	   <div class="input_fields_wrap">
+            <p><div><input type="text" name="participants" class="form-control" placeholder="Enter a username"></div>
+	   </div>
+       <button class="formbutton add_field_button">Add</button>
+	   <label>Type</label>
 		<select id="selectbox" class="form-control" name="type">
 			<option value="Catch-up">Catch-up</option>
 			<option value="Study Date">Study Date</option>
@@ -46,37 +41,30 @@
 			<option value="Party">Party</option>
 			<option value="Other">Other</option>
 		</select>
-	</p>
-	
-	<p>
-	<div class="datecontainer">
-			Start Date
+	   <div class="datecontainer">
+			<label>Start Date</label>
             <div class='input-group date' id='datetimepicker1'>
                 <input type='text' name="startdate" class="form-control" value="{{date}}"/>
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
             </div>
-            End Date
+            <label>End Date</label>
             <div class='input-group date' id='datetimepicker2'>
                 <input type='text' name="enddate" class="form-control"  value="{{date}}"/>
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
             </div>
-	</div>
-	</p>
-
-	<p>Location<br>
-	<input id="locationTextField" class="form-control" type="text" name="location">
-	</p>
-
-	<p>Description<br>
-	<textarea id="notesbox" class="form-control" style="overflow-x:hidden" name="notes" placeholder="Description"></textarea>
-	</p>
-	
-	<p><input type="submit"></p>
-</form>
+	   </div>
+	   <label>Location</label>
+	       <input id="locationTextField" class="form-control" type="text" name="location">
+	   <label>Description</label>
+	       <textarea id="notesbox" class="form-control" style="overflow-x:hidden" name="notes" placeholder="Description"></textarea>
+	   <input class="formbutton" type="submit"></p>
+    </form>
+    </div>
+    <br>
 </div>
 
 
@@ -111,7 +99,7 @@
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(wrapper).append('<div><input type="text" name="participants" class="form-control"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+            $(wrapper).append('<div><input type="text" name="participants" class="form-control"/><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>'); //add input box
         }
     });
     

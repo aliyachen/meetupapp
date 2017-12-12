@@ -1,19 +1,87 @@
 
-<td>
-<h1>{{ title }}</h1>
-  	{{#if allusers}}
-  	<h2>My Friends</h2>
+<div class="animate-in">
+{{#if allusers}}
+	<div class="meetupbox">
+  	<h2 class="pagetitles">My Friends</h2><hr>
+  		<p>
    		{{#each friendsList}}
-      		<p>  <a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}&nbsp<a href="removefriend/{{this._id}}">Remove Friend</a></p>
+   		<div class="meetup">
+      		<div class="thumbnail">
+				<a href="profile/{{this.id}}/">
+					{{#if this.profilepic}}
+						<img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+					{{else}}
+						<img src="/css/empty-photo.jpg" class="responsive-img">
+					{{/if}}
+				</a>
+			</div>
+      		<a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}<br><a href="removefriend/{{this._id}}" class="smallformbutton">Remove Friend</a>
+      	</div>
+      	<br>
     	{{/each}}
-    <h2>Other Users</h2>
-    	{{#each userList}}
-      		<p><a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}&nbsp<a href="requestfriend/{{this._id}}">Request Friend</a>&nbsp<a href="deleteuser/{{this._id}}">deletecompletelynotready</a></p>
-    	{{/each}}
-    {{else}}
-    	{{#each userList}}
-      		<p><a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}&nbsp<a href="acceptfriend/{{this._id}}">Accept Friend</a></p>
-    	{{/each}}
+    	</p>
+    </div>
 
-    {{/if}}
-</td>
+    <div class="meetupboxpast">
+    <h2 class="pagetitles">Other Users</h2><hr>
+    	<p>
+    	{{#each userList}}
+    	<div class="meetup">
+    		<div class="thumbnail">
+      			<a href="profile/{{this.id}}/">
+      				{{#if this.profilepic}}
+						<img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+					{{else}}
+						<img src="/css/empty-photo.jpg" class="responsive-img">
+					{{/if}}
+				</a>
+			</div>
+			<a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}<br><a href="requestfriend/{{this._id}}" class="smallformbutton">Request Friend</a>&nbsp<a href="deleteuser/{{this._id}}" style="display:none;">deletecompletelynotready</a>
+		</div>
+		<br>
+    	{{/each}}
+    	</p>
+    </div>
+    {{else}}
+    <div class="meetupbox">
+    <h2 class="pagetitles">Incoming Friend Requests</h2><hr>
+    	<p>
+    	{{#each incomingList}}
+    	<div class="meetup">
+    		<div class="thumbnail">
+      			<a href="profile/{{this.id}}/">
+      				{{#if this.profilepic}}
+						<img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+					{{else}}
+						<img src="/css/empty-photo.jpg" class="responsive-img">
+					{{/if}}
+				</a>
+			</div>
+			<a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}<br><a href="acceptfriend/{{this._id}}" class="smallformbutton">Accept Friend</a>
+		</div>
+		<br>
+    	{{/each}}
+    	</p>
+    </div>
+    <div class="meetupboxpast">
+    <h2 class="pagetitles">Outgoing Friend Requests</h2><hr>
+    	<p>
+    	{{#each outgoingList}}
+    	<div class="meetup">
+    		<div class="thumbnail">
+      			<a href="profile/{{this.id}}/">
+      				{{#if this.profilepic}}
+						<img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+					{{else}}
+						<img src="/css/empty-photo.jpg" class="responsive-img">
+					{{/if}}
+				</a>
+			</div>
+			<a href="profile/{{this.id}}/">{{name}}</a>&nbsp{{email}}<br><a href="profile/{{this.id}}/" class="smallformbutton">Request Pending</a>
+		</div>
+		<br>
+    	{{/each}}
+    	</p>
+    </div>
+{{/if}}
+</div>

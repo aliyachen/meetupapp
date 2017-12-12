@@ -5,7 +5,7 @@ This app allows users to record their meetups.
 ### Current Features
 * Register and login to access personal meetups
 * Create a meetup (name, participants, type, start date, end date, location, notes)
-* Edit meetup (edit current details, upload/change image), delete, archive, or restore meetups
+* Edit meetup (edit current details, upload/change multiple images), delete, archive, or restore meetups
 * View meetups individually, view all meetups on one page, or view meetups by type (meetups are sorted by date and time in ascending order)
 * Set date/time using Datetimepicker API; set location using Google Places Autocomplete API
 * Get Google map directions for meetup location using Google Place Autocomplete and Directions API
@@ -22,15 +22,13 @@ This app allows users to record their meetups.
 * Simplify code 
 
 ### To Do
-* Sort friends, users, friend requests in alphabetical order
-* Add profile pic
 * View friends list on profile
 * Send email notifications for meetups, friend requests, etc.
 * Improve CSS/design (fade in, scroll animations, backgrounds, etc.)
 * Separate categories for meetups user has created and meetups user was added to
 
 ### Tentative To Do
-* Add multiple images to a meetup
+* Send notification when participant is added to a meetup; instead of being added immediately, send as an invite; participant is added if invite is accepted?
 * Delete images from a meetup, also delete images from storage if meetup is deleted
 * Click/expand image on meetup view
 * Option to manually type in value for "Other" option for meetup type 

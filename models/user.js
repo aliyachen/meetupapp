@@ -16,7 +16,7 @@ var User = mongoose.Schema({
 	name: {
 		type: String
 	},
-	profilepc: {
+	profilepic: {
 		type: String
 	},
 	meetupslist: [{

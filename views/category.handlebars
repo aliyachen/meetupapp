@@ -8,32 +8,36 @@
     <div class="bgimage"></div>
 <body>
  {{#if user}}
-<div>
-	<h1>{{ title }}</h1>
-	<p>
-		{{#each meetups}}
-		<div class="meetup">
-		<div class="thumbnail">
-		<a href="view/{{this.id}}/">
-			{{#if this.img}}
-			<img src="/uploads/{{ this.img }}" class="responsive-img">
-			{{else}}
-			<img src="/css/empty-photo.jpg" class="responsive-img">
-			{{/if}}
-		</a>
-		</div>
-		<a href="view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a><br>
-		<a href="delete/{{this._id}}">delete</a>&nbsp;<a href="archive/{{this.id}}/">archive</a>
-		</div>
-		<br>
-		{{/each}}
-	</p>
+<div class="animate-in">
+
+
+
+	<h1 class="pagetitles">{{ title }}</h1><hr>
+		<ul class="collapsible" data-collapsible="accordion">
+			{{#each meetups}}
+					<div class="thumbnail">
+					{{#if this.img}}
+						<img src="/uploads/{{ this.img.[0] }}" class="responsive-img">
+					{{else}}
+						<img src="/css/empty-photo.jpg" class="responsive-img">
+					{{/if}}
+					</div>
+					<li>
+						<div class="collapsible-header"><a href="view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a></div>
+						<div class="collapsible-body" style="text-align:left;"><span>
+							<p>Creator: {{this.creator}}</p>
+							<p>Date: {{this.startdate}} - {{this.enddate}}</p>
+							<p>Participants: {{#each this.participants}}{{this}}, {{/each}}</p>
+							<p>Location: {{this.location}}</p>
+							<p><a href="delete/{{this._id}}">delete</a>&nbsp; | &nbsp;<a href="archive/{{this.id}}/">archive</a></p>
+						</span></div>
+					</li>
+			{{/each}}
+		</ul>
 </div>
-{{else}}
-<div class="hometext">
-<h2 class="page-header">Meeting up with someone?</h2>
-<p>Login or register to keep track of all your meetups!</p>
-</div>
+
+
+
 {{/if}}
 </body>
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
