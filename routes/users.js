@@ -16,8 +16,6 @@ router.get('/login', function(req, res) {
 	res.render('login');
 
 });
-
-
 //register user
 router.post('/register', function(req, res) {
 	var name = req.body.name;
@@ -60,13 +58,10 @@ router.post('/register', function(req, res) {
   			 });
 		},
 		function second(validationerrors, done) {
-			console.log("validationerrors should be true" + validationerrors);
 			if (!validationerrors) {
 
 				User.find(query, function (err, user) {
-					console.log("what is uer: " + user);
 					userlength = user.length;
-					console.log("user length: " + userlength);
 					done(null, userlength);
 				});	
 
@@ -76,7 +71,6 @@ router.post('/register', function(req, res) {
 			}
 		},
 		function third(userlength, done) {
-			console.log("beter not be here");
 			var usernameexists = false;
 			if (userlength == -1) {
 				usernameexists = true;
@@ -91,7 +85,6 @@ router.post('/register', function(req, res) {
 			done(null, usernameexists)
 		},
 		function fourth(usernameexists, done) {
-			console.log("username exists should be false" + usernameexists);
 			if (!usernameexists) {
 				var newUser = new User({
 					name: name,
@@ -115,36 +108,6 @@ router.post('/register', function(req, res) {
 			console.log(err);
 		}
 	});
-
-
-	// var query = {username: username};
-	// var userlength = 0;
-	// User.find(query, function (err, user) {
-	// 	console.log("what is uer: " + user);
-	// 	userlength = user.length;
-	// });
-
-	// console.log("userlength : " + userlength); 
-	// if (userlength != 0) {
-	// 	res.render('register',{
-	// 		errmessage: "Username already taken"
-	// 	})
-	// }  else {
-	// 	var newUser = new User({
-	// 		name: name,
-	// 		email: email,
-	// 		username: username,
-	// 		password: password
-	// 	});
-
-	// 	User.createUser(newUser, function(err, user){
-	// 		if(err) throw err;
-	// 		console.log(user);
-	// 	});
-
-	// 	req.flash('success_msg', 'You are registered and can now login!');
-	// 	res.redirect('/users/login');
-	// }
 });
 
 passport.use(new LocalStrategy(

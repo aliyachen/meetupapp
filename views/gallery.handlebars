@@ -1,8 +1,9 @@
-
-	<link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/lightbox.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
-    <script src="/js/lightbox.js"><{{!}}/script>
+<head>
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="/css/lightbox.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
+<script src="/js/lightbox.js"><{{!}}/script>
+</head>
 
 <body>
 <div class="animate-in">
@@ -11,15 +12,13 @@
 <div class="gallery">
     {{#each meetups}}
       {{#if this.img}} 
-     
-     {{#each this.img}}
-     <div class="galleryimg" style="float:left;">
-      <a href="/uploads/{{ this}}" data-lightbox="galleryimages">
-	     <img src="/uploads/{{ this }}" class="responsive-img hover-opacity" value="{{this.startdate}}: {{this.meetupName}}" style="float: left; cursor:pointer" name="added_imgs">
-      </a> 
-      </div>
-      {{/each}}
-  
+        {{#each this.img}}
+          <div class="galleryimg" style="float:left;">
+            <a href="/uploads/{{ this}}" data-lightbox="galleryimages" data-title="{{../this.startdate}}: {{../this.meetupName}}">
+	           <img src="/uploads/{{ this }}" class="responsive-img hover-opacity" value="{{this.startdate}}: {{this.meetupName}}" style="float: left; cursor:pointer" name="added_imgs">
+            </a> 
+          </div>
+        {{/each}}
     {{/if}}
 	{{/each}}
   </div>
@@ -29,14 +28,12 @@
   <div class="modal-content animate-opacity">
     <img id="img01" style="max-width:100w; width:auto; max-height:100vh; height:auto">
   </div>
-  <div id="caption"></div>
 </div>
 </body>
 
 <script>
-var caption = $(this).value;
 lightbox.option({
-    'albumLabel': caption,
+    'showImageNumberLabel': false,
     'resizeDuration': 0,
     'imageFadeDuration': 200,
     'fadeDuration': 300,

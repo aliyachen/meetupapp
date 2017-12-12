@@ -1,121 +1,100 @@
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Compiled and minified CSS -->
-  
-
-
-  <!-- Compiled and minified JavaScript -->
- 
-
-
-
-    <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">{{!}}</script>
+<script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">{{!}}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"><{{!}}/script>
-    <script data-require="moment.js@*" data-semver="2.14.1" src="https://npmcdn.com/moment@2.14.1"><{{!}}/script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"><{{!}}/script>
-       <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"><{{!}}/script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.js"><{{!}}/script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.css" />
- 
-
-  <link rel="stylesheet" href="/css/style.css" />
+<script data-require="moment.js@*" data-semver="2.14.1" src="https://npmcdn.com/moment@2.14.1"><{{!}}/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"><{{!}}/script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"><{{!}}/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.js"><{{!}}/script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.3.0/fullcalendar.min.css" />
+<link rel="stylesheet" href="/css/style.css" />
 </head>
+
 <body>
-
 <div class="animate-in">
-
-<div class="pagecontent">
-
-
-<h1>{{userview.name}} ({{userview.username}})</h1><hr>
-<div class="profileuploadandpic">
-	<div class="profilepic">
-		<p>
-		{{#if userview.profilepic}}
-			<img src="/uploads/{{ userview.profilepic }}" class="responsive-img" name="added_imgs">
-
-		{{else}}
-			<img src="/css/empty-photo.jpg" class="responsive-img">
-		{{/if}}
-		</p>
-
-	</div>
-	{{#if userequals}}
-	<div class="uploadprofile">
-  		<form method="post" action="/upload/{{user.id}}"  enctype="multipart/form-data" >
-  			<p>
-  			<input type="file" name="imgUploader" accept="image/*" value="/uploads/{{ user.profilepic }}">
-  			<input class="formbutton" type="submit" name="edit" value="Upload"></p>
-  		</form>
-	</div>
-	{{/if}}
-	<br>
-
-	{{#if friends}}
-	<div class="friendsbox">
-  	<h3 class="pagetitles" style="text-align:center;">Friends</h3><hr style="margin-top:0px">
-   		{{#each friendsList}}
-   		<div class="meetup" style="display:flex; align-items:center;margin-bottom:1px;">
-      		<div class="thumbnail">
-				<a href="profile/{{this.id}}/">
-					{{#if this.profilepic}}
-						<img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+	<div class="pagecontent">
+		<h1>{{userview.name}} ({{userview.username}})</h1><hr>
+			<div class="profileuploadandpic">
+				<div class="profilepic">
+					<p>
+					{{#if userview.profilepic}}
+						<img src="/uploads/{{ userview.profilepic }}" class="responsive-img" name="added_imgs">
 					{{else}}
 						<img src="/css/empty-photo.jpg" class="responsive-img">
 					{{/if}}
-				</a>
-			</div>
-      		<a href="/profile/{{this.id}}/">{{name}}</a>
-      	</div>
-    	{{/each}}
-    </div>
-   	{{/if}}
-
-
-
-</div>
-
-	{{#if friends}}
-	{{else}}
-		<h6 style="text-align:left;padding-left:20px;float:left"> You aren't friends with {{userview.name}}. <a href={{requestlink}}>Add {{userview.name}}</a> as a friend to see more! </h6>
-	{{/if}}
-
-
-
-</div>
-
-
-<div class="infoprofile">
-{{#if friends}}
-	<div class="meetupbox">
-	
-	<h2 class="pagetitles">Upcoming</h2>
-	{{#if meetups}}
-		<ul class="collapsible" data-collapsible="accordion">
-			{{#each meetups}}
-					<div class="thumbnail">
-					{{#if this.img}}
-						{{#if ../userequals}}
-							<a href="/view/{{this.id}}/"><img src="/uploads/{{ this.img.[0] }}" class="responsive-img"></a>
-						{{else}}
-							<img src="/uploads/{{ this.img.[0] }}" class="responsive-img">
-						{{/if}}
-					{{else}}
-						{{#if ../userequals}}<a href="/view/{{this.id}}/"><img src="/css/empty-photo.jpg" class="responsive-img"></a>
-						{{else}}
-						<img src="/css/empty-photo.jpg" class="responsive-img">
-						{{/if}}
-					{{/if}}
+					</p>
+				</div>
+				{{#if userequals}}
+					<div class="uploadprofile">
+  					<form method="post" action="/upload/{{user.id}}"  enctype="multipart/form-data" >
+  						<p><input type="file" name="imgUploader" accept="image/*" value="/uploads/{{ user.profilepic }}">
+  						<input class="formbutton" type="submit" name="edit" value="Upload"></p>
+  					</form>
 					</div>
+				{{/if}}
+				<br>
+				{{#if friends}}
+					<div class="friendsbox">
+  						<h3 class="pagetitles" style="text-align:center;">Friends</h3><hr style="margin-top:0px">
+  						{{#if friendsList}}
+   							{{#each friendsList}}
+   								<div class="meetup" style="display:flex; align-items:center;margin-bottom:1px;">
+      								<div class="thumbnail">
+										<a href="profile/{{this.id}}/">
+										{{#if this.profilepic}}
+											<img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+										{{else}}
+											<img src="/css/empty-photo.jpg" class="responsive-img">
+										{{/if}}
+										</a>
+									</div>
+      								<a href="/profile/{{this.id}}/">{{name}}</a>
+      							</div>
+    						{{/each}}
+    					{{else}}
+    						{{#if userequals}}
+								<p style="text-align:center;"><a href="/users">Add a friend!</a></p>
+							{{/if}}
+    					{{/if}}
+   					 </div>
+   				{{/if}}
+			</div>
+		{{#if friends}}
+		{{else}}
+			<h6 style="text-align:left;padding-left:20px;float:left"> You aren't friends with {{userview.name}}. <a href={{requestlink}}>Add {{userview.name}}</a> as a friend to see more! </h6>
+		{{/if}}
+	</div>
+	<div class="infoprofile">
+		{{#if friends}}
+			<div class="meetupbox">
+				<h2 class="pagetitles">Upcoming</h2>
+				{{#if meetups}}
+					<ul class="collapsible" data-collapsible="accordion">
+					{{#each meetups}}
+						<div class="thumbnail">
+						{{#if this.img}}
+							{{#if ../userequals}}
+								<a href="/view/{{this.id}}/"><img src="/uploads/{{ this.img.[0] }}" class="responsive-img"></a>
+							{{else}}
+								<img src="/uploads/{{ this.img.[0] }}" class="responsive-img">
+							{{/if}}
+						{{else}}
+							{{#if ../userequals}}<a href="/view/{{this.id}}/"><img src="/css/empty-photo.jpg" class="responsive-img"></a>
+							{{else}}
+							<img src="/css/empty-photo.jpg" class="responsive-img">
+							{{/if}}
+						{{/if}}
+						</div>
 					<li>
 						<div class="collapsible-header">
+							<div style="width:100%; text-align:left; float:left;">
 							{{#if ../userequals}}<a href="/view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a>
 							{{else}}
-							{{this.startdate}} - {{this.meetupName}}
+								{{this.startdate}} - {{this.meetupName}}
 							{{/if}}
+								<img src="/img/arrow-down.png" class="arrowdown">
+							</div>
 						</div>
-
 						<div class="collapsible-body" style="text-align:left;"><span>
 							<p>Creator: {{this.creator}}</p>
 							<p>Date: {{this.startdate}} - {{this.enddate}}</p>
@@ -124,20 +103,17 @@
 							{{#if ../userequals}}<p><a href="delete/{{this._id}}">DELETE</a>&nbsp; | &nbsp;<a href="archive/{{this.id}}/">ARCHIVE</a></p>{{/if}}
 						</span></div>
 					</li>
-			{{/each}}
-		</ul>
-
-	{{else}}
-	{{#if userequals}}
-		<p style="text-align:left;"> No meetups to show. <a href="/createmeetup">Create a meetup!</a></p>
-	{{else if friends}}
-		<p style="text-align:left;"> No meetups to show. <a href="/createmeetup">Create a meetup</a> with {{userview.name}}!</p>
-	{{/if}}
-	{{/if}}
-	</p>
+					{{/each}}
+			</ul>
+			{{else}}
+				{{#if userequals}}
+					<p style="text-align:left;"> No meetups to show. <a href="/createmeetup">Create a meetup!</a></p>
+				{{else if friends}}
+					<p style="text-align:left;"> No meetups to show. <a href="/createmeetup">Create a meetup</a> with {{userview.name}}!</p>
+				{{/if}}
+			{{/if}}
+		</p>
 	</div>
-
-
 	<div class="meetupboxpast">
 	<h2 class="pagetitles">Past</h2>
 	{{#if pastmeetups}}
@@ -158,10 +134,13 @@
 					</div>
 					<li>
 						<div class="collapsible-header">
+							<div style="width:100%; text-align:left; float:left;">
 							{{#if ../userequals}}<a href="/view/{{this.id}}/">{{this.startdate}} - {{this.meetupName}}</a>
 							{{else}}
 							{{this.startdate}} - {{this.meetupName}}
 							{{/if}}
+							<img src="/img/arrow-down.png" class="arrowdown">
+							</div>
 						</div>
 						<div class="collapsible-body" style="text-align:left;"><span>
 							<p>Creator: {{this.creator}}</p>
@@ -175,9 +154,7 @@
 		</ul>
 
 	{{else}}
-
 			<p style="text-align:left;"> No archived meetups to show.</p>
-			
 	{{/if}}
 	</div>
 
@@ -188,17 +165,11 @@
     <div id="events" style="display:none;">{{{events}}}</div>
   </div>
   {{/if}}
-
-
-
-
 {{/if}}
 </div>
 </div>
 </div>
 </body>
-
-
 
 <script type="text/javascript">    
     $(document).ready(function() {

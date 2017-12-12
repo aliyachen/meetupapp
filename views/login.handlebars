@@ -1,29 +1,25 @@
-<!--bg image-->
-
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
+</head>
 <body class="user">
-
 <div class="hometext animate-in">
-<div class="staticbgimage"></div>
-	<h2 class="page-header">meeting up with someone?</h2>
-	<p>login or register to keep track of all your meetups!</p>
-
-	<div class="center-con">
-
-	<a href="#loginpage">
-    <div class="round">
-        <span class="arrow"></span>
-        <span class="arrow"></span>
-        <span class="arrow"></span>
-        <span class="arrow"></span>
-    </div></a>
-    
+	<div class="staticbgimage"></div>
+		<h2 class="page-header">meeting up with someone?</h2>
+		<p>login or register to keep track of all your meetups!</p>
+		<div class="center-con">
+			<a href="#loginpage">
+    		<div class="round">
+        		<span class="arrow"></span>
+        		<span class="arrow"></span>
+        		<span class="arrow"></span>
+        		<span class="arrow"></span>
+    		</div></a>
+		</div>
 	</div>
-
-</div>
 <div class="login animate-in">
 	<a id="loginpage"></a>
 	<div class="logincontainer">
-	<form method="post" action="/users/login">
+		<form method="post" action="/users/login">
 			<label>
 				<input type="text" name="username">
     			<div class="label-text">Username</div>
@@ -33,11 +29,11 @@
 				<div class="label-text">Password</div>
 			</label>
 		 <button type="submit" class="buttonlogin btn btn-default">Login</button>
-	</form>
+		</form>
 	</div>
 </div>
 </body>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"><{{!}}/script>
+
 <script> 
  $(document).ready(function(){
     $('#login').fadeIn(500);

@@ -1,71 +1,65 @@
-
- <script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language=en&key=AIzaSyB4Ztm5h7pIWU2NmEqbwJbjsWfIZebzN1I"><{{!}}/script>
+<head>
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&language=en&key=AIzaSyB4Ztm5h7pIWU2NmEqbwJbjsWfIZebzN1I"><{{!}}/script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-<!--datetimepicker-->
-  <script src="https://code.jquery.com/jquery-1.12.4.js"><{{!}}/script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"><{{!}}/script>
-
+<script src="https://code.jquery.com/jquery-1.12.4.js"><{{!}}/script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"><{{!}}/script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"><{{!}}/script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"><{{!}}/script>
-
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"><{{!}}/script>
-
 <script src="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/a549aa8780dbda16f6cff545aeabc3d71073911e/src/js/bootstrap-datetimepicker.js"><{{!}}/script>
-
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
-
 <link href="http://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/a549aa8780dbda16f6cff545aeabc3d71073911e/build/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
 
-	<link rel="stylesheet" href="/css/style.css" />
-
+<body>
 <div class="animate-in">
-<div class="notebookbg"></div>
-<h1 class="pagetitles" style="color:white;">Create Meetup</h1><hr>
-    <div class="form">
-    <form method="post">
-	   <label>Name</label>
-	   <input class="form-control" type="text" name="meetupName" placeholder="Meetup Name">
-	   <label>Participants</label>
-	   <div class="input_fields_wrap">
-            <p><div><input type="text" name="participants" class="form-control" placeholder="Enter a username"></div>
-	   </div>
-       <button class="formbutton add_field_button">Add</button>
-	   <label>Type</label>
-		<select id="selectbox" class="form-control" name="type">
-			<option value="Catch-up">Catch-up</option>
-			<option value="Study Date">Study Date</option>
-			<option value="Business Meeting">Business Meeting</option>
-			<option value="Club Meeting">Club Meeting</option>
-			<option value="Party">Party</option>
-			<option value="Other">Other</option>
-		</select>
-	   <div class="datecontainer">
-			<label>Start Date</label>
-            <div class='input-group date' id='datetimepicker1'>
-                <input type='text' name="startdate" class="form-control" value="{{date}}"/>
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-            <label>End Date</label>
-            <div class='input-group date' id='datetimepicker2'>
-                <input type='text' name="enddate" class="form-control"  value="{{date}}"/>
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-	   </div>
-	   <label>Location</label>
-	       <input id="locationTextField" class="form-control" type="text" name="location">
-	   <label>Description</label>
-	       <textarea id="notesbox" class="form-control" style="overflow-x:hidden" name="notes" placeholder="Description"></textarea>
-	   <input class="formbutton" type="submit"></p>
-    </form>
-    </div>
+    <div class="notebookbg"></div>
+        <h1 class="pagetitles" style="color:white;">Create Meetup</h1><hr>
+            <div class="form">
+                <form method="post">
+	               <label>Name</label>
+	                   <input class="form-control" type="text" name="meetupName" placeholder="Meetup Name">
+	               <label>Participants</label>
+	                   <div class="input_fields_wrap">
+                            <p><div><input type="text" name="participants" class="form-control" placeholder="Enter a username"></div>
+	                   </div>
+                        <button class="formbutton add_field_button">Add</button>
+	               <label>Type</label>
+		              <select id="selectbox" class="form-control" name="type">
+			             <option value="Catch-up">Catch-up</option>
+			             <option value="Study Date">Study Date</option>
+			             <option value="Business Meeting">Business Meeting</option>
+			             <option value="Club Meeting">Club Meeting</option>
+			             <option value="Party">Party</option>
+			             <option value="Other">Other</option>
+		              </select>
+	               <div class="datecontainer">
+			         <label>Start Date</label>
+                        <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' name="startdate" class="form-control" value="{{date}}"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    <label>End Date</label>
+                        <div class='input-group date' id='datetimepicker2'>
+                        <input type='text' name="enddate" class="form-control"  value="{{date}}"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+	               </div>
+	               <label>Location</label>
+	                   <input id="locationTextField" class="form-control" type="text" name="location">
+	               <label>Description</label>
+	                   <textarea id="notesbox" class="form-control" style="overflow-x:hidden" name="notes" placeholder="Description"></textarea>
+	               <input class="formbutton" type="submit"></p>
+            </form>
+        </div>
     <br>
 </div>
+</body>
 
 
 
@@ -83,8 +77,8 @@
             $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
         });
     });
-     var input = document.getElementById('locationTextField');
-              var autocomplete = new google.maps.places.Autocomplete(input);
+    var input = document.getElementById('locationTextField');
+    var autocomplete = new google.maps.places.Autocomplete(input);
 <{{!}}/script>
 
 <script>
@@ -102,7 +96,6 @@
             $(wrapper).append('<div><input type="text" name="participants" class="form-control"/><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>'); //add input box
         }
     });
-    
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
