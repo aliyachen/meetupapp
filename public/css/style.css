@@ -627,6 +627,7 @@ body {
   border-radius: 5px;
   margin: 4px;
   margin-left:2px;
+  padding: 0px;
 }
 .thumbnail img {
   width: 100%;

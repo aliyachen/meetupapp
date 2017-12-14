@@ -19,14 +19,5 @@ module.exports = {
 	output: {
 		filename: 'transformed.js',
 		path: __dirname + '/build'
-	},
-	plugins: [
-		HTMLWebpackPluginConfig,
-		new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        'window.jQuery': 'jquery',
-        Popper: ['popper.js', 'default'],
-      })
-	]
+	}
 };

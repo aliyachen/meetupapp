@@ -6,6 +6,7 @@ var users = require('../routes/users');
 var session = require('express-session');
 var passport = require('passport');
 var multer = require('multer');
+var async = require('async');
 
 router.use(session({
 	secret: 'secret',
@@ -30,6 +31,57 @@ function ensureAuthenticated(req, res, next){
 	}
 };
 
+//sort users alphabetically
+function sortAlphabetically(arrayOfUsers) {
+	arrayOfUsers.sort (function (a, b) {
+    	return a.name.localeCompare(b.name);
+	});
+}
+
+function getUserFriends(user, friendArray, done) {
+	var friendslist = user.friendslist;
+	async.each(friendslist, function(friendsId, next) {
+		User.findById(friendsId, function (err, friend) {
+			if (err) {
+				console.log(err);
+			}
+			else  {
+				friendArray.push(friend);
+			next();
+			}
+		})
+	}, function(err) {
+		sortAlphabetically(friendArray);
+		done(null, friendArray)
+	});
+}
+
+function getParticipants(currparticipants, participantsarray, done) {
+	var participantslist = currparticipants;
+	async.each(participantslist, function(participantId, next) {
+		User.getUserByUsername(participantId, function (err, participant) {
+			if (err) {
+				console.log(err);
+			}
+			else  {
+				participantsarray.push(participant);
+			next();
+			}
+		})
+	}, function(err) {
+		sortAlphabetically(participantsarray);
+		done(null, participantsarray)
+	});
+}
+
+function contains(a, obj) {
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
 
 //upload images
 //set storage
@@ -49,6 +101,7 @@ var upload = multer({
 
 //create
 router.get('/createMeetup', ensureAuthenticated, function (req, res) {
+	console.log(req.user);
 	var today = new Date();
 	var dd = today.getDate();
 	var mm = today.getMonth()+1; //January is 0!
@@ -60,45 +113,110 @@ router.get('/createMeetup', ensureAuthenticated, function (req, res) {
    	 mm = '0'+mm
 	} 
 	today = mm + '/' + dd + '/' + yyyy;
-	res.render('createMeetup', { 
-		user: req.user,
-		date: today
+	var friendArray = [];
+	async.waterfall([
+		function first(done) {
+			getUserFriends(req.user, friendArray, done);
+		},
+		function second(friendArray, done) {
+			friendArray = friendArray;
+			console.log(friendArray.length);
+			var userarray = [];
+			User.find(function (err, arrayOfUsers) {
+    			if (err) {
+    				console.log('cannot find users');
+    			} else {
+    				//don't display yourself
+    				var index = 0;
+    				for (var i = 0; i < arrayOfUsers.length; i++) {
+    					if(arrayOfUsers[i].id == req.user.id) {
+    						index = i;
+    					}
+    				}
+    				//don't display friends in all users list
+    				arrayOfUsers.splice(index, 1);
+    				for (var i = 0; i < friendArray.length; i++) {
+    					for (var j = 0; j < arrayOfUsers.length; j++) {
+    						if(arrayOfUsers[j].id == friendArray[i].id) {
+    							index = j;
+    						}
+    					}
+    					arrayOfUsers.splice(index, 1);
+    				}
+    				userarray = arrayOfUsers;
+    				sortAlphabetically(userarray);
+    				done(null, friendArray, userarray)
+   			 	}
+  			});
+		},
+		function third(friendArray, userarray, done) {
+			 res.render('createMeetup', { 
+    			user: req.user,
+    			friendslist: friendArray,
+    			userlist: userarray,
+    			date: today
+    		});
+			done(null)
+		}
+	], function (err) {
+		if (err) {
+			console.log(err);
+		}
 	});
 });
 
 router.post('/createMeetup', function(req, res){
-	var meetup = new Meetup({
-		meetupName: req.body.meetupName,
-		creator: req.user.username,
-		participants: req.body.participants,
-		type: req.body.type,
-		startdate: req.body.startdate,
-		enddate: req.body.enddate,
-		location: req.body.location,
-		notes: req.body.notes,
-		status: req.body.status,
-	});
-	meetup.save(function(err){
-		meetup.participants.forEach(function (participant) {
-			User.getUserByUsername(participant, function(err, user){
-  				if(err) throw err;
-  				if(user){
-  					user.meetupslist.push(meetup.id);
-  					user.save();
-			  	}
-			});
-		})
-		req.user.meetupslist.push(meetup.id);
-		req.user.save();
-		Meetup.find(function(err, toHBS) {
-			if (err) {
-				console.log("Failed to save meetup");
-			} else {
-				meetups: toHBS
+	var participantsarray = [];
+	if (typeof(req.body.participants) == 'object') {
+		for (var i = 0; i < req.body.participants.length; i++) {
+			if (req.body.participants[i] != '') {
+				if (!contains(participantsarray, req.body.participants[i])) {
+					participantsarray.push(req.body.participants[i]);
+				}
 			}
+		}
+	} else {
+		participantsarray.push(req.body.participants);
+	}
+	console.log("partic length" + participantsarray.length);
+	if (req.body.meetupName) {
+		var meetup = new Meetup({
+			meetupName: req.body.meetupName,
+			creator: req.user.username,
+			participants: participantsarray,
+			type: req.body.type,
+			startdate: req.body.startdate,
+			enddate: req.body.enddate,
+			location: req.body.location,
+			notes: req.body.notes,
+			status: req.body.status,
 		});
+		meetup.save(function(err){
+			meetup.participants.forEach(function (participant) {
+				User.getUserByUsername(participant, function(err, user){
+  					if(err) throw err;
+  					if(user){
+  						user.meetupslist.push(meetup.id);
+  						user.save();
+			  		}
+				});
+			})
+			req.user.meetupslist.push(meetup.id);
+			req.user.save();
+			Meetup.find(function(err, toHBS) {
+				if (err) {
+					console.log("Failed to save meetup");
+				} else {
+					meetups: toHBS
+				}
+			});
+			res.redirect('/profile');
+		});
+	} else {
 		res.redirect('/profile');
-	});
+		console.log('cannot save');
+	}
+	
 });
 
 //view meetup
@@ -107,9 +225,25 @@ router.get('/view/:id/', ensureAuthenticated, function(req, res) {
 	Meetup.findOne({
 		_id: id
 	}, function(err, doc) {
-		res.render('view', {
-			meetupid: id,
-			meetups: doc
+		var participantsarray = [];
+		var currparticipants = doc.participants;
+		async.waterfall([
+			function first(done) {
+				getParticipants(currparticipants, participantsarray, done);
+			},
+			function second(participantsarray, done) {
+				participantsarray = participantsarray;
+			 	res.render('view', {
+			 		meetupid: id,
+			 		meetups: doc,
+			 		participantsarray: participantsarray
+    			});
+				done(null)
+			}
+		], function (err) {
+			if (err) {
+				console.log(err);
+			}
 		});
 	});
 })
@@ -120,11 +254,59 @@ router.get('/edit/:id/', ensureAuthenticated, function(req, res) {
 	Meetup.findOne({
 		_id: id
 	}, function(err, doc) {
-		res.render('view', {
-			edit: true,
-			meetups: doc
-		});
+		var friendArray = [];
+	async.waterfall([
+		function first(done) {
+			getUserFriends(req.user, friendArray, done);
+		},
+		function second(friendArray, done) {
+			friendArray = friendArray;
+			console.log(friendArray.length);
+			var userarray = [];
+			User.find(function (err, arrayOfUsers) {
+    			if (err) {
+    				console.log('cannot find users');
+    			} else {
+    				//don't display yourself
+    				var index = 0;
+    				for (var i = 0; i < arrayOfUsers.length; i++) {
+    					if(arrayOfUsers[i].id == req.user.id) {
+    						index = i;
+    					}
+    				}
+    				//don't display friends in all users list
+    				arrayOfUsers.splice(index, 1);
+    				for (var i = 0; i < friendArray.length; i++) {
+    					for (var j = 0; j < arrayOfUsers.length; j++) {
+    						if(arrayOfUsers[j].id == friendArray[i].id) {
+    							index = j;
+    						}
+    					}
+    					arrayOfUsers.splice(index, 1);
+    				}
+    				userarray = arrayOfUsers;
+    				sortAlphabetically(userarray);
+    				done(null, friendArray, userarray)
+   			 	}
+  			});
+		},
+		function third(friendArray, userarray, done) {
+			 res.render('view', { 
+			 	edit: true,
+    			user: req.user,
+    			friendslist: friendArray,
+    			userlist: userarray,
+    			meetups: doc
+    		});
+			done(null)
+		}
+	], function (err) {
+		if (err) {
+			console.log(err);
+		}
 	});
+});
+
 })
 
 //update
@@ -132,6 +314,18 @@ router.post('/update/:id', upload.array('imgUploader', 10), function(req, res) {
 	var files = [];
 	for (var i = 0; i < req.files.length; i++) {
 		files[i] = req.files[i].filename;
+	};
+	var participantsarray = [];
+	if (typeof(req.body.updated_participants) == 'object') {
+		for (var i = 0; i < req.body.updated_participants.length; i++) {
+			if (req.body.updated_participants[i] != '') {
+				if (!contains(participantsarray, req.body.updated_participants[i])) {
+					participantsarray.push(req.body.updated_participants[i]);
+				}
+			}
+		}
+	} else { //single participant string
+		participantsarray.push(req.body.updated_participants);
 	}
 
 	var id = req.params.id;
@@ -144,7 +338,7 @@ router.post('/update/:id', upload.array('imgUploader', 10), function(req, res) {
 	if (files.length > 0) {
 		Meetup.findById(id, function(err, meetup){
 			meetup.meetupName = req.body.updated_meetupName,
-			meetup.participants = req.body.updated_participants,
+			meetup.participants = participantsarray,
 			meetup.type = req.body.updated_type,
 			meetup.startdate = req.body.updated_startdate,
 			meetup.enddate = req.body.updated_enddate,
@@ -163,7 +357,7 @@ router.post('/update/:id', upload.array('imgUploader', 10), function(req, res) {
 	} else {
 		Meetup.findById(id, function(err, meetup){
 			meetup.meetupName = req.body.updated_meetupName,
-			meetup.participants = req.body.updated_participants,
+			meetup.participants = participantsarray,
 			meetup.type = req.body.updated_type,
 			meetup.startdate = req.body.updated_startdate,
 			meetup.enddate = req.body.updated_enddate,

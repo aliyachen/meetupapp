@@ -182,10 +182,11 @@
        eventsdata = JSON.parse(eventsdata);
        console.log(eventsdata);
         $('#calendar').fullCalendar({
+           timeFormat: 'hh:mm a',
     	   events: eventsdata,
     	   aspectRatio: 2,
     	   eventMouseover: function(calEvent, jsEvent) {
-    	   		var start = moment(calEvent.start).format("HH:mm A");
+    	   		var start = moment(calEvent.start).format("hh:mm A");
     			var tooltip = '<div class="tooltipevent" style="width:175px;height:100px;background:white;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);border-radius:5px;display:flex;align-items:center;justify-content:center;position:absolute;z-index:10001;">' + calEvent.title + '<br>' + start + '</div>';
     			$("body").append(tooltip);
     			$(this).mouseover(function(e) {

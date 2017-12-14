@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+var User = require('../models/user');
 var Meetup = mongoose.Schema({
 	meetupName: {
 		type: String,

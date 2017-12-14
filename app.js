@@ -83,7 +83,7 @@ app.use('/users', users);
 app.use('/', meetups);
 
 //set port
-app.set('port', (process.env.PORT || 3000));
+app.set('port', (process.env.PORT || 4000));
 
 
 
@@ -132,7 +132,10 @@ function sortByDate(arrayOfMeetups) {
     		var atime = asplitwhite[1] + " " + asplitwhite[2].toLowerCase();
     		var btime = bsplitwhite[1] + " " + bsplitwhite[2].toLowerCase();
     		value = new Date('2000/01/01 ' + atime) - new Date('2000/01/01 ' + btime);
-    	} 
+    		if (value == 0) {
+    			value = a.meetupName.localeCompare(b.meetupName);
+    		};
+    	};
     	return value;
 	});
 }
@@ -219,7 +222,7 @@ function getUserMeetupsIndex(user, meetupArray1, meetupArray2, status1, done) {
 			}
 		})
 	}, function(err) {
-		sortByDate(meetupArray2);
+		sortByDate(meetupArray1);
 		sortByDate(meetupArray2)
 		done(null, meetupArray1, meetupArray2)
 	});
@@ -263,25 +266,45 @@ function renderUserMeetupsCalendar(user, userview, res, renderurl, title, friend
 			meetupArray.forEach(function(e) {
 				var startstr = e.startdate;
 				if (startstr.charAt(12) == ':') {
-					startstr = startstr.slice(0, 11) + '0' + startstr.slice(11, 16);
+					var add = parseInt(startstr.charAt(11)) + 12;
+					startstr = startstr.slice(0, 11) + '0' + startstr.slice(11, 19);
 				}
-		 		var startmonth = startstr.slice(0, 2);
+
+				var startmonth = startstr.slice(0, 2);
  			   	var startday = startstr.slice(3, 5);
 		    	var startyear = startstr.slice(6, 10);
   		  		var starthour = startstr.slice(11, 13);
     			var startmin = startstr.slice(14, 16);
-    			var startdate = startyear + "-" +  startmonth + "-" + startday + "T" + starthour + ":" + startmin + ":00";
+    			var ampm = startstr.slice(17, 19);
+    			if (ampm == 'PM' && startstr.charAt(11) == '0') {
+    				var add = parseInt(startstr.charAt(12)) + 12;
+    				starthour = add;
+    			}
+    			if (ampm == 'AM' && starthour == '12') {
+    				starthour = '00';
+    			}
+    			var startdate = startyear + "-" +  startmonth + "-" + startday + " " + starthour + ":" + startmin;
 
-				var endstr = e.startdate;
+		 		var endstr = e.enddate;
 				if (endstr.charAt(12) == ':') {
-					endstr = endstr.slice(0, 11) + '0' + endstr.slice(11, 16);
+					var add = parseInt(endstr.charAt(11)) + 12;
+					endstr = endstr.slice(0, 11) + '0' + endstr.slice(11, 19);
 				}
- 				var endmonth = endstr.slice(0, 2);
-    			var endday = endstr.slice(3, 5);
-    			var endyear = endstr.slice(6, 10);
-    			var endhour = endstr.slice(11, 13);
+
+				var endmonth = endstr.slice(0, 2);
+ 			   	var endday = endstr.slice(3, 5);
+		    	var endyear = endstr.slice(6, 10);
+  		  		var endhour = endstr.slice(11, 13);
     			var endmin = endstr.slice(14, 16);
-    			var enddate = endyear + "-" +  endmonth + "-" + endday + "T" + endhour + ":" + endmin + ":00";
+    			var ampm = endstr.slice(17, 19);
+    			if (ampm == 'PM' && endstr.charAt(11) == '0') {
+    				var add = parseInt(endstr.charAt(12)) + 12;
+    				endhour = add;
+    			}
+    			if (ampm == 'AM' && endhour == '12') {
+    				endhour = '00';
+    			}
+    			var enddate = endyear + "-" +  endmonth + "-" + endday + " " + endhour + ":" + endmin;
     			events.push({
     				start: startdate,
     				end: enddate,
@@ -711,6 +734,9 @@ app.get('/profile', ensureAuthenticated, function(req, res) {
 	User.findOne({
 		_id: id
 	}, function(err, user) {
+		if (err) {
+			console.log(err);
+		}
 		renderUserMeetupsCalendar(req.user, user, res, 'profile', 'Upcoming', true, true);
 		//renderUserMeetups(req.user, user, res, 'profile', user.name, true);
 	});

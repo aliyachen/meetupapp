@@ -18,13 +18,76 @@
         <h1 class="pagetitles" style="color:white;">Create Meetup</h1><hr>
             <div class="form">
                 <form method="post">
-	               <label>Name</label>
+	                <label>Name</label>
 	                   <input class="form-control" type="text" name="meetupName" placeholder="Meetup Name">
-	               <label>Participants</label>
-	                   <div class="input_fields_wrap">
-                            <p><div><input type="text" name="participants" class="form-control" placeholder="Enter a username"></div>
-	                   </div>
-                        <button class="formbutton add_field_button">Add</button>
+	                <label>Participants</label>
+                        <button type="button" class="formbutton" data-toggle="modal" data-target="#myModal">Find Users</button><br>
+                        <!-- Modal -->
+                        <div id="myModal" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h3 class="modal-title" style="text-align:left;">Add Participants</h3>
+                              </div>
+                              <div class="modal-body">
+                                    <h4 class="pagetitles">Friends</h4>
+                                        {{#if friendslist}}
+                                        {{#each friendslist}}
+                                            <div class="meetup" style="display:flex; align-items:center;margin-bottom:1px;">
+                                                <div style="display:flex; align-items:center;width:20%">
+                                                    <div class="thumbnail">
+                                                        <a href="profile/{{this.id}}/">
+                                                        {{#if this.profilepic}}
+                                                            <img src="/uploads/{{ this.profilepic }}">
+                                                        {{else}}
+                                                            <img src="/css/empty-photo.jpg">
+                                                        {{/if}}
+                                                        </a>
+                                                    </div>
+                                                    <a href="/profile/{{this.id}}/">{{name}}</a>
+                                                </div>
+                                                <div style="display: flex; justify-content: flex-end; width:80%"; float:right;>
+                                                    <input type="button" class="adduserbutton formbutton add_field_button" name="{{ this.username }}" value="Add" style="margin-top:0">
+                                                </div>
+                                            </div>
+                                        {{/each}}
+                                        {{else}}
+                                            <p style="text-align:left;"><a href="/users">Add a friend!</a></p>
+                                        {{/if}}
+                                        <br>
+                                    <h4 class="pagetitles">Other Users</h4>
+                                        {{#if userlist}}
+                                        {{#each userlist}}
+                                            <div class="meetup" style="display:flex; align-items:center;margin-bottom:1px;">
+                                                <div style="display:flex; align-items:center;width:20%">
+                                                    <div class="thumbnail">
+                                                        <a href="profile/{{this.id}}/">
+                                                        {{#if this.profilepic}}
+                                                            <img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+                                                        {{else}}
+                                                            <img src="/css/empty-photo.jpg" class="responsive-img">
+                                                        {{/if}}
+                                                        </a>
+                                                    </div>
+                                                    <a href="/profile/{{this.id}}/">{{name}}</a>
+                                                </div>
+                                                <div style="display: flex; justify-content: flex-end; width:80%"; float:right;>
+                                                    <input type="button" class="adduserbutton formbutton add_field_button" name="{{ this.username }}" value="Add" style="margin-top:0">
+                                                </div>
+                                            </div>
+                                        {{/each}}
+                                        {{else}}
+                                            <p style="text-align:left;">No users to display.</p>
+                                        {{/if}}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                    </div><br>
+	               <div class="input_fields_wrap"></div>
 	               <label>Type</label>
 		              <select id="selectbox" class="form-control" name="type">
 			             <option value="Catch-up">Catch-up</option>
@@ -81,24 +144,30 @@
     var autocomplete = new google.maps.places.Autocomplete(input);
 <{{!}}/script>
 
-<script>
-(function ($) {
+<script type="text/javascript" language="javascript">
+
     $(document).ready(function() {
-    var max_fields      = 10; //maximum input boxes allowed
+    var max_fields      = 100; //maximum input boxes allowed
     var wrapper         = $(".input_fields_wrap"); //Fields wrapper
     var add_button      = $(".add_field_button"); //Add button ID
-    
-    var x = 1; //initlal text box count
-    $(add_button).click(function(e){ //on add input button click
-        e.preventDefault();
-        if(x < max_fields){ //max input box allowed
+    var x = 0;
+    var adduserselection = document.getElementsByClassName('adduserbutton');
+    for (var i = 0; i < adduserselection.length; i++) {
+        adduserselection[i].addEventListener('click', function(e){
+            e.preventDefault();
+            if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(wrapper).append('<div><input type="text" name="participants" class="form-control"/><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>'); //add input box
+            var username = $(this).attr('name');
+            //$(wrapper).append('<div><input type="text" name="participants" value=username class="form-control"/><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>'); //add input box
+
+            $(wrapper).append('<div><input type="text" name="participants" value=' + username + ' class="form-control"/><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>'); //add input box
         }
-    });
+
+        });
+    }
+    
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
 });
-})(jQuery);
 <{{!}}/script>

@@ -24,15 +24,78 @@
   <input class="form-control" type="text" name="updated_meetupName" value="{{meetups.meetupName}}"></p>
 
   <label>Participants</label>
-<div class="input_fields_wrap">
-  {{#each meetups.participants}}
-      <div><input type="text" name="updated_participants" value="{{this}}"  class="form-control"><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>
-  {{else}} 
-    <div><input type="text" name="updated_participants" class="form-control" placeholder="Enter a username"></div>
+    <button type="button" class="formbutton" data-toggle="modal" data-target="#myModal">Find Users</button><br><br>
+       {{#each meetups.participants}}
+          <div class="currentinput_fields_wrap">
+            <div><input type="text" name="updated_participants" value="{{this}}"  class="form-control"><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>
+          </div>
     {{/each}}
-  </div>
-  
-     <button class="formbutton add_field_button">Add</button>
+                        <!-- Modal -->
+                        <div id="myModal" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h3 class="modal-title" style="text-align:left;">Add Participants</h3>
+                              </div>
+                              <div class="modal-body">
+                                    <h4 class="pagetitles">Friends</h4>
+                                        {{#if friendslist}}
+                                        {{#each friendslist}}
+                                            <div class="meetup" style="display:flex; align-items:center;margin-bottom:1px;">
+                                                <div style="display:flex; align-items:center;width:20%">
+                                                    <div class="thumbnail">
+                                                        <a href="profile/{{this.id}}/">
+                                                        {{#if this.profilepic}}
+                                                            <img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+                                                        {{else}}
+                                                            <img src="/css/empty-photo.jpg" class="responsive-img">
+                                                        {{/if}}
+                                                        </a>
+                                                    </div>
+                                                    <a href="/profile/{{this.id}}/">{{name}}</a>
+                                                </div>
+                                                <div style="display: flex; justify-content: flex-end; width:80%"; float:right;>
+                                                    <input type="button" class="adduserbutton formbutton add_field_button" name="{{ this.username }}" value="Add" style="margin-top:0">
+                                                </div>
+                                            </div>
+                                        {{/each}}
+                                        {{else}}
+                                            <p style="text-align:left;"><a href="/users">Add a friend!</a></p>
+                                        {{/if}}
+                                        <br>
+                                    <h4 class="pagetitles">Other Users</h4>
+                                        {{#if userlist}}
+                                        {{#each userlist}}
+                                            <div class="meetup" style="display:flex; align-items:center;margin-bottom:1px;">
+                                                <div style="display:flex; align-items:center;width:20%">
+                                                    <div class="thumbnail">
+                                                        <a href="profile/{{this.id}}/">
+                                                        {{#if this.profilepic}}
+                                                            <img src="/uploads/{{ this.profilepic }}" class="responsive-img">
+                                                        {{else}}
+                                                            <img src="/css/empty-photo.jpg" class="responsive-img">
+                                                        {{/if}}
+                                                        </a>
+                                                    </div>
+                                                    <a href="/profile/{{this.id}}/">{{name}}</a>
+                                                </div>
+                                                <div style="display: flex; justify-content: flex-end; width:80%"; float:right;>
+                                                    <input type="button" class="adduserbutton formbutton add_field_button" name="{{ this.username }}" value="Add" style="margin-top:0">
+                                                </div>
+                                            </div>
+                                        {{/each}}
+                                        {{else}}
+                                            <p style="text-align:left;">No users to display.</p>
+                                        {{/if}}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+      <div class="input_fields_wrap"></div>
   <label>Type</label>
     <select id="selectbox" class="form-control" name="updated_type" value="{{meetups.type}}">
       <option value="Catch-up">Catch-up</option>
@@ -87,31 +150,34 @@
               var autocomplete = new google.maps.places.Autocomplete(input);
 <{{!}}/script>
 
-<script>
-(function ($) {
+<script type="text/javascript" language="javascript">
+
     $(document).ready(function() {
-    var max_fields      = 10; //maximum input boxes allowed
+    var max_fields      = 100; //maximum input boxes allowed
+    var currwrapper         = $(".currentinput_fields_wrap"); //Fields wrapper
     var wrapper         = $(".input_fields_wrap"); //Fields wrapper
     var add_button      = $(".add_field_button"); //Add button ID
-    
-    var x = 1; //initlal text box count
-    $(add_button).click(function(e){ //on add input button click
-        e.preventDefault();
-        if(x < max_fields){ //max input box allowed
+    var x = 0;
+    var adduserselection = document.getElementsByClassName('adduserbutton');
+    for (var i = 0; i < adduserselection.length; i++) {
+        adduserselection[i].addEventListener('click', function(e){
+            e.preventDefault();
+            if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(wrapper).append('<div><input type="text" name="updated_participants" class="form-control"/><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>'); //add input box
+            var username = $(this).attr('name');
+
+            $(wrapper).append('<div><input type="text" name="updated_participants" value=' + username + ' class="form-control"/><a href="#" class="remove_field" style="text-decoration:none; color:white;">REMOVE</a></div>'); //add input box
         }
-    });
-    
+
+        });
+    }
+    $(currwrapper).on("click",".remove_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
 });
-var typevalue = document.getElementById("selectbox").value;
-$(function(){
-      document.getElementById("selectbox").value = typevalue;
-  });
-})(jQuery);
 <{{!}}/script>
 
 
@@ -151,33 +217,32 @@ $(function(){
 
 <table>
   <tr>
-    <td class="category">Creator</td>
+    <td class="category">CREATOR</td>
     <td style="border:none;">{{meetups.creator}}</td>
   </tr>
   <tr>
-    <td class="category">Type</td>
+    <td class="category">TYPE</td>
     <td style="border:none;">{{meetups.type}}</td>
   </tr>
   <tr>
-    <td class="category">Participants</td>
+    <td class="category">PARTICIPANTS</td>
     <td style="border:none;">
-    {{#each meetups.participants}}
+    {{#each participantsarray}}
 
-<a href="profile/{{this.id}}/">{{name}}</a>
-
-    {{ this }}<br>
+<a href="/profile/{{this.id}}/">{{name}}</a>
+<br>
     {{/each}}
   </tr>
   <tr>
-    <td class="category">Date</td>
-    <td style="border:none;">{{meetups.startdate}}-{{meetups.enddate}}</td>
+    <td class="category">DATE</td>
+    <td style="border:none;">{{meetups.startdate}} to {{meetups.enddate}}</td>
   </tr>
   <tr>
-    <td class="category">Location</td>
+    <td class="category">LOCATION</td>
     <td style="border:none;">{{meetups.location}}</td>
   </tr>
   <tr>
-    <td class="category">Description</td>
+    <td class="category">DESCRIPTION</td>
     <td style="border:none;">{{meetups.notes}}</td>
   </tr>
 </table>
@@ -196,13 +261,13 @@ $(function(){
 
 <div id="mode-selector" class="controls">
   <input type="radio" name="type" id="changemode-walking" checked="checked">
-  <label for="changemode-walking">Walking</label>
+  <label for="changemode-walking" style="display:inline-block; padding-top: 3px;">Walking</label>
 
   <input type="radio" name="type" id="changemode-transit">
-  <label for="changemode-transit">Transit</label>
+  <label for="changemode-transit" style="display:inline-block; padding-top: 3px;">Transit</label>
 
   <input type="radio" name="type" id="changemode-driving">
-  <label for="changemode-driving">Driving</label>
+  <label for="changemode-driving" style="display:inline-block; padding-top: 3px;">Driving</label>
 </div>
 
 <div id="map"></div>
